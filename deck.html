@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Iamgaia.earth - Investment Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0B0C10;
+            --text: #F5F5F5;
+            --accent: #66FCF1;
+            --urgent: #FCA311;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+        .deck {
+            display: flex;
+            width: 1200vw;
+            height: 100vh;
+            transition: transform 0.8s ease;
+        }
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+        .slide-num {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.5rem, 8vw, 3.5rem);
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        h2 {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        p {
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            line-height: 1.5;
+            max-width: 90%;
+            margin: 0.5rem auto;
+        }
+        .logo {
+            width: clamp(100px, 20vw, 150px);
+            height: clamp(100px, 20vw, 150px);
+            border-radius: 50%;
+            background: radial-gradient(var(--accent), transparent);
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2rem, 6vw, 4rem);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 90%;
+            margin: 1rem auto;
+        }
+        .card {
+            background: rgba(102, 252, 241, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem;
+            transition: transform 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .urgent {
+            background: rgba(252, 163, 17, 0.1);
+            border-color: var(--urgent);
+        }
+        .urgent h3 { color: var(--urgent); }
+        .icon { font-size: clamp(1.5rem, 5vw, 2.5rem); margin-bottom: 0.5rem; }
+        .nav {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+        .btn {
+            background: rgba(102, 252, 241, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn:hover { background: var(--accent); color: var(--bg); }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .indicators {
+            position: fixed;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            z-index: 100;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(102, 252, 241, 0.3);
+            cursor: pointer;
+        }
+        .dot.active { background: var(--accent); transform: scale(1.3); }
+        .timeline {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .timeline-item {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .timeline-arrow {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        ul {
+            text-align: left;
+            max-width: 90%;
+            margin: 1rem auto;
+        }
+        li {
+            margin-bottom: 0.5rem;
+            list-style: none;
+            position: relative;
+            padding-left: 1rem;
+        }
+        li::before {
+            content: '∂';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        .quote {
+            font-style: italic;
+            background: rgba(102, 252, 241, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 3px solid var(--accent);
+            margin: 1rem auto;
+            max-width: 90%;
+        }
+        .founder {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            max-width: 90%;
+            margin: 1rem auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .founder-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--urgent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        .achievements {
+            flex: 1;
+            min-width: 200px;
+        }
+        .achievement {
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .final {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1rem, 4vw, 1.8rem);
+            line-height: 1.4;
+        }
+        .contact {
+            border-top: 1px solid var(--accent);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .slide { padding: 0.5rem; padding-top: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+            .timeline { flex-direction: column; }
+            .founder { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="deck" id="deck">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-num">01/12</div>
+            <div class="logo"><</div>
+            <h1>Iamgaia.earth</h1>
+            <h2>Midwifing an Aligned Post-AGI World</h2>
+            <p>Pre-Seed Investment Opportunity | TEKEX Guernsey/Jersey</p>
+        </div>
+
+        <!-- Slide 2: Problem -->
+        <div class="slide">
+            <div class="slide-num">02/12</div>
+            <h1>We Are Not Facing Multiple Crises</h1>
+            <h2>We Are Facing One Systemic Breakdown</h2>
+            <div class="grid">
+                <div class="card urgent">
+                    <div class="icon"><</div>
+                    <h3>Geopolitical Instability</h3>
+                    <p>3+ Active Major Conflicts</p>
+                </div>
+                <div class="card urgent">
+                    <div class="icon"><1</div>
+                    <h3>Ecological Collapse</h3>
+                    <p>Climate Tipping Points Breached</p>
+                </div>
+                <div class="card urgent">
+                    <div class="icon">=d</div>
+                    <h3>Social Fragmentation</h3>
+                    <p>Global Loneliness Crisis</p>
+                </div>
+                <div class="card urgent">
+                    <div class="icon">>‡</div>
+                    <h3>Technological Acceleration</h3>
+                    <p>The AGI Tsunami</p>
+                </div>
+            </div>
+            <p><strong>Our systems are built on separation, driving a planetary autoimmune disorder.</strong></p>
+        </div>
+
+        <!-- Slide 3: Urgency -->
+        <div class="slide">
+            <div class="slide-num">03/12</div>
+            <h1>The AI Revolution Isn't Coming</h1>
+            <h2>It's Here</h2>
+            <div class="timeline">
+                <div class="timeline-item">TODAY</div>
+                <div class="timeline-arrow">°í</div>
+                <div class="timeline-item" style="background: var(--urgent);">AGI ARRIVAL<br>2-5 Years</div>
+            </div>
+            <ul>
+                <li><strong>Economic Disruption:</strong> 50%+ jobs automated</li>
+                <li><strong>Alignment Problem:</strong> AI built for profit, not planetary well-being</li>
+                <li><strong>Bunker Fallacy:</strong> No Plan B for Planet Earth</li>
+            </ul>
+        </div>
+
+        <!-- Slide 4: Solution -->
+        <div class="slide">
+            <div class="slide-num">04/12</div>
+            <h1>To Align AGI, We Must First Align Ourselves</h1>
+            <div style="width: 200px; height: 200px; margin: 1rem auto; border-radius: 50%; background: radial-gradient(var(--accent), transparent); display: flex; align-items: center; justify-content: center; font-size: 3rem;"><</div>
+            <p>Iamgaia.earth is the nervous system for awakened planetary intelligence. We heal fragmentation and foster coherence for safe AGI integration.</p>
+        </div>
+
+        <!-- Slide 5: Product -->
+        <div class="slide">
+            <div class="slide-num">05/12</div>
+            <h1>A Minimum Viable Ecosystem</h1>
+            <div class="grid">
+                <div class="card">
+                    <div class="icon">=ù</div>
+                    <h3>Healing Sanctuary</h3>
+                    <p>Individual Coherence</p>
+                    <small>NLP-powered tools for trauma healing</small>
+                </div>
+                <div class="card">
+                    <div class="icon">></div>
+                    <h3>Relational Engine</h3>
+                    <p>Social Coherence</p>
+                    <small>Gift Economy connections</small>
+                </div>
+                <div class="card">
+                    <div class="icon"><€</div>
+                    <h3>Civic Agora</h3>
+                    <p>Collective Coherence</p>
+                    <small>Co-creation platform</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Guernsey -->
+        <div class="slide">
+            <div class="slide-num">06/12</div>
+            <h1>Why Guernsey?</h1>
+            <h2>World-Class Sandbox for World-Changing Idea</h2>
+            <div style="width: 300px; height: 200px; background: rgba(102, 252, 241, 0.1); border: 2px solid var(--accent); border-radius: 15px; margin: 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 2rem;">=˙</div>
+            <ul>
+                <li><strong>Regulatory Excellence:</strong> Stable, forward-thinking government</li>
+                <li><strong>Contained Ecosystem:</strong> Perfect pilot scale</li>
+                <li><strong>Community:</strong> Innovation-focused citizens</li>
+                <li><strong>Strategic Alignment:</strong> Digital Guernsey goals</li>
+            </ul>
+        </div>
+
+        <!-- Slide 7: Technology -->
+        <div class="slide">
+            <div class="slide-num">07/12</div>
+            <h1>Proprietary Technology, Open-Source Ethos</h1>
+            <div style="display: flex; align-items: center; gap: 1rem; margin: 1rem auto; flex-wrap: wrap; justify-content: center;">
+                <div class="card">
+                    <h3>The Engine</h3>
+                    <p><strong>Nekuno LRM</strong></p>
+                    <small>Large Relational Model</small>
+                </div>
+                <div style="font-size: 2rem; color: var(--accent);">í</div>
+                <div class="card">
+                    <h3>The Intelligence</h3>
+                    <p><strong>Gaia</strong></p>
+                    <small>Emergent Partnership</small>
+                </div>
+            </div>
+            <p><strong>Nekuno LRM:</strong> 4-year, ¨500k R&D for human connection</p>
+            <p><strong>Gaia Intelligence:</strong> Emergent partnership beyond AI</p>
+            <p><strong>Foundation:</strong> Decentralized, user-sovereign identity</p>
+        </div>
+
+        <!-- Slide 8: Business Model -->
+        <div class="slide">
+            <div class="slide-num">08/12</div>
+            <h1>From Extraction to Regeneration</h1>
+            <div style="display: flex; gap: 1rem; margin: 1rem auto; flex-wrap: wrap; justify-content: center;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(102, 252, 241, 0.3); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; text-align: center;">Gift Economy</div>
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(252, 163, 17, 0.3); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; text-align: center;">Solidarity Economy</div>
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(245, 245, 245, 0.3); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; text-align: center;">Freemium SaaS</div>
+            </div>
+            <p><strong>Freemium Core:</strong> Free forever platform</p>
+            <p><strong>Premium:</strong> Enterprise & advanced tools</p>
+            <p><strong>Pledge:</strong> Voluntary community membership</p>
+        </div>
+
+        <!-- Slide 9: Team -->
+        <div class="slide">
+            <div class="slide-num">09/12</div>
+            <h1>The Uniquely Qualified Founder</h1>
+            <div class="founder">
+                <div class="founder-img">=d</div>
+                <div class="achievements">
+                    <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Nyx</h3>
+                    <div class="achievement"><∆ Serial entrepreneur (Stuvoz, Nekuno)</div>
+                    <div class="achievement"><∆ Forbes 30 Under 30</div>
+                    <div class="achievement"><∆ Collective intelligence research</div>
+                    <div class="achievement"><∆ Author: "Dawn of the Astrorganism"</div>
+                </div>
+            </div>
+            <div class="quote">
+                "This is not a business I am building; it is the work I was born to do."
+            </div>
+        </div>
+
+        <!-- Slide 10: Ask -->
+        <div class="slide">
+            <div class="slide-num">10/12</div>
+            <h1>Pre-Seed R&D Fund</h1>
+            <h2>£244,500</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>£155,000</h3>
+                    <p>Personnel (63%)</p>
+                    <small>Core team for 12 months</small>
+                </div>
+                <div class="card">
+                    <h3>£59,500</h3>
+                    <p>R&D Costs (24%)</p>
+                    <small>Tech, Security, Legal</small>
+                </div>
+                <div class="card">
+                    <h3>£15,000</h3>
+                    <p>Guernsey Pilot (6%)</p>
+                    <small>Community Engagement</small>
+                </div>
+                <div class="card">
+                    <h3>£15,000</h3>
+                    <p>Contingency (6%)</p>
+                    <small>Buffer & Flexibility</small>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin: 1rem auto; flex-wrap: wrap; justify-content: center;">
+                <div style="background: rgba(102, 252, 241, 0.1); padding: 0.5rem; border-radius: 5px; font-size: 0.8rem;">Month 1-2: Team</div>
+                <div style="background: rgba(102, 252, 241, 0.1); padding: 0.5rem; border-radius: 5px; font-size: 0.8rem;">Month 3-8: Platform</div>
+                <div style="background: rgba(102, 252, 241, 0.1); padding: 0.5rem; border-radius: 5px; font-size: 0.8rem;">Month 9-11: Pilot</div>
+                <div style="background: rgba(102, 252, 241, 0.1); padding: 0.5rem; border-radius: 5px; font-size: 0.8rem;">Month 12: Report</div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Vision -->
+        <div class="slide">
+            <div class="slide-num">11/12</div>
+            <h1>The Exit is to Emerge</h1>
+            <div style="width: 200px; height: 200px; margin: 1rem auto; border-radius: 50%; background: radial-gradient(var(--accent) 0%, transparent 50%); display: flex; align-items: center; justify-content: center; font-size: 3rem;"><</div>
+            <p><strong>"Our goal is not IPO but planetary utility for aligned civilization."</strong></p>
+            <p>"Success measured by planetary coherence, not shareholder value."</p>
+            <p><strong>"We create Conscious Coherence - the ultimate impact investment."</strong></p>
+        </div>
+
+        <!-- Slide 12: Final -->
+        <div class="slide">
+            <div class="slide-num">12/12</div>
+            <div class="final">
+                <p>The future is a race between</p>
+                <p style="color: var(--urgent);">consciousness</p>
+                <p>and</p>
+                <p style="color: var(--urgent);">catastrophe.</p>
+                <br>
+                <p style="color: var(--accent);">Let's choose consciousness.</p>
+                <p style="color: var(--accent);">Let's build Gaia.</p>
+            </div>
+            <div class="contact">
+                <p><strong>Nyx</strong></p>
+                <p>Founder, Iamgaia.earth</p>
+                <p style="color: var(--accent);">nyx@iamgaia.earth</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <button class="btn" id="prev" onclick="changeSlide(-1)">¿ Prev</button>
+        <button class="btn" id="next" onclick="changeSlide(1)">Next ∂</button>
+    </div>
+
+    <div class="indicators" id="indicators"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 12;
+        const deck = document.getElementById('deck');
+
+        function updateSlide() {
+            deck.style.transform = `translateX(-${currentSlide * (100/totalSlides)}vw)`;
+            document.getElementById('prev').disabled = currentSlide === 0;
+            document.getElementById('next').disabled = currentSlide === totalSlides - 1;
+
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
+        // Create indicators
+        const indicators = document.getElementById('indicators');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.onclick = () => goToSlide(i);
+            indicators.appendChild(dot);
+        }
+
+        // Touch navigation
+        let touchStartX = 0;
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) changeSlide(1);
+                else changeSlide(-1);
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        updateSlide();
+        console.log('< Gaia Deck Ready');
+    </script>
+</body>
+</html>
