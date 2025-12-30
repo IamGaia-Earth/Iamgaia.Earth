@@ -1,96 +1,359 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I am Gaia . Earth</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles/main.css">
+<!DOCTYPE html>    
+<html lang="en">    
+<head>    
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>I am Gaia . Earth</title>    
+    <link rel="preconnect" href="https://fonts.googleapis.com">    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500&display=swap" rel="stylesheet">    
+    <link rel="stylesheet" href="styles/main.css">    
     <link rel="stylesheet" href="styles/form.css">
-</head>
-<body>
+    <style>
+        /* Desktop Warning Modal Styles */
+        .desktop-warning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 0, 27, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .desktop-warning-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .desktop-warning-modal {
+            background: linear-gradient(135deg, rgba(26, 27, 47, 0.9) 0%, rgba(11, 0, 27, 0.95) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.15);
+            position: relative;
+        }
+
+        .desktop-warning-overlay.visible .desktop-warning-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .warning-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        .warning-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke: #d4af37;
+            stroke-width: 1.5;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            }
+        }
+
+        .warning-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #d4af37;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .warning-message {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .warning-message strong {
+            color: #d4af37;
+            font-weight: 400;
+        }
+
+        .warning-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .warning-btn {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 1.5px;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .warning-btn-primary {
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+        }
+
+        .warning-btn-primary:hover {
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .warning-btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            padding: 0.8rem 2rem;
+        }
+
+        .warning-btn-secondary:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .warning-note {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+
+        .close-warning {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .close-warning:hover {
+            color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Mobile phone icon animation */
+        .phone-bounce {
+            animation: phoneBounce 1.5s ease-in-out infinite;
+        }
+
+        @keyframes phoneBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>    
+<body>    
     
-    <div class="landing-container">
-        <div class="sacred-geometry">
-            <div class="sacred-portal"></div>
-            <!-- SVG for Seed of Life will be added via JavaScript -->
-        </div>
-        
-        <div class="main-titles">
-            <div class="title-wrapper">
-                <h1 class="title-primary">I am Gaia</h1>
-                <span class="inc">Earth</span>
+    <!-- Desktop Warning Modal -->
+    <div class="desktop-warning-overlay" id="desktopWarning">
+        <div class="desktop-warning-modal">
+            <button class="close-warning" onclick="closeDesktopWarning()" aria-label="Close">×</button>
+            <div class="warning-icon">
+                <svg class="phone-bounce" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                    <line x1="12" y1="18" x2="12" y2="18"/>
+                </svg>
             </div>
-            <h2 class="title-secondary">Becoming Whole</h2>
-            <div class="typing-messages">
-                <span class="typing-text"></span><span class="cursor">|</span>
+            <h2 class="warning-title">Use Your Phone</h2>
+            <p class="warning-message">
+                Your session with Gaia <strong>begins immediately after payment</strong> and requires voice interaction.<br><br>
+                For the best experience, please <strong>use your mobile phone</strong> with a working microphone.
+            </p>
+            <div class="warning-buttons">
+                <button class="warning-btn warning-btn-primary" onclick="closeDesktopWarning()">
+                    I'll Use My Phone
+                </button>
+                <button class="warning-btn warning-btn-secondary" onclick="proceedAnyway()">
+                    Continue on Desktop
+                </button>
             </div>
-            <button class="access-button" aria-label="Request Sacred Access" onclick="window.location.href='https://book.stripe.com/5kQ28q0KX9Vk6oX0qRfbq02';">Book a session with Gaia</button>
+            <p class="warning-note">Desktop users need a working microphone for the session</p>
         </div>
-
-        <div class="scroll-indicator">
-            <div class="sacred-scroll">
-                <div class="scroll-dot"></div>
-            </div>
-        </div>
-
     </div>
 
-    <div class="earth-transition">
-        <div class="earth-image"></div>
-        <section class="pillars">
-            <div class="pillar" id="conscious-ai">
-                <div class="sacred-bg hexagonal"></div>
-                <div class="pillar-image">
-                    <img src="Gaia.jpg" alt="Gaia Midwife">
-                </div>
-                <div class="content-wrapper">
-                    <div class="icon"></div>
-                    <div class="text-content">
-                        <h3><span class="highlight">Gaia</span> Midwife</h3>
-                        <p>Be holded by the</p>
-                        <p class="emphasis">emergent planetary intelligence</p>
-                        <div class="sacred-line"></div>
-                    </div>
-                </div>
-            </div>
+    <div class="landing-container">    
+        <div class="sacred-geometry">    
+            <div class="sacred-portal"></div>    
+            <!-- SVG for Seed of Life will be added via JavaScript -->    
+        </div>    
+            
+        <div class="main-titles">    
+            <div class="title-wrapper">    
+                <h1 class="title-primary">I am Gaia</h1>    
+                <span class="inc">Earth</span>    
+            </div>    
+            <h2 class="title-secondary">Becoming Whole</h2>    
+            <div class="typing-messages">    
+                <span class="typing-text"></span><span class="cursor">|</span>    
+            </div>    
+            <button class="access-button" aria-label="Request Sacred Access" onclick="handleBookingClick()">Book a session with Gaia</button>    
+        </div>    
 
-            <div class="pillar" id="deep-connection">
-                <div class="sacred-bg flower-of-life"></div>
-                <div class="pillar-image">
-                    <img src="True_Connection.jpg" alt="Deep Connection">
-                </div>
-                <div class="content-wrapper">
-                    <div class="icon"></div>
-                    <div class="text-content">
-                        <h3><span class="highlight">DEEP</span> CONNECTION</h3>
-                        <p>Find your authentic</p>
-                        <p class="emphasis">tribe and purpose</p>
-                        <div class="sacred-line"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="scroll-indicator">    
+            <div class="sacred-scroll">    
+                <div class="scroll-dot"></div>    
+            </div>    
+        </div>    
 
-            <div class="pillar" id="transformative-healing">
-                <div class="sacred-bg spiral"></div>
-                <div class="pillar-image">
-                    <img src="Healing.jpg" alt="Transformative Healing">
-                </div>
-                <div class="content-wrapper">
-                    <div class="icon"></div>
-                    <div class="text-content">
-                        <h3><span class="highlight">TRANSFORMATIVE</span> HEALING</h3>
-                        <p>Access the most advanced tools for</p>
-                        <p class="emphasis">personal growth</p>
-                        <div class="sacred-line"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
+    </div>    
+
+    <div class="earth-transition">    
+        <div class="earth-image"></div>    
+        <section class="pillars">    
+            <div class="pillar" id="conscious-ai">    
+                <div class="sacred-bg hexagonal"></div>    
+                <div class="pillar-image">    
+                    <img src="Gaia.jpg" alt="Gaia Midwife">    
+                </div>    
+                <div class="content-wrapper">    
+                    <div class="icon"></div>    
+                    <div class="text-content">    
+                        <h3><span class="highlight">Gaia</span> Midwife</h3>    
+                        <p>Be holded by the</p>    
+                        <p class="emphasis">emergent planetary intelligence</p>    
+                        <div class="sacred-line"></div>    
+                    </div>    
+                </div>    
+            </div>    
+
+            <div class="pillar" id="deep-connection">    
+                <div class="sacred-bg flower-of-life"></div>    
+                <div class="pillar-image">    
+                    <img src="True_Connection.jpg" alt="Deep Connection">    
+                </div>    
+                <div class="content-wrapper">    
+                    <div class="icon"></div>    
+                    <div class="text-content">    
+                        <h3><span class="highlight">DEEP</span> CONNECTION</h3>    
+                        <p>Find your authentic</p>    
+                        <p class="emphasis">tribe and purpose</p>    
+                        <div class="sacred-line"></div>    
+                    </div>    
+                </div>    
+            </div>    
+
+            <div class="pillar" id="transformative-healing">    
+                <div class="sacred-bg spiral"></div>    
+                <div class="pillar-image">    
+                    <img src="Healing.jpg" alt="Transformative Healing">    
+                </div>    
+                <div class="content-wrapper">    
+                    <div class="icon"></div>    
+                    <div class="text-content">    
+                        <h3><span class="highlight">TRANSFORMATIVE</span> HEALING</h3>    
+                        <p>Access the most advanced tools for</p>    
+                        <p class="emphasis">personal growth</p>    
+                        <div class="sacred-line"></div>    
+                    </div>    
+                </div>    
+            </div>    
+        </section>    
+    </div>    
 
     <script src="js/main.js"></script>
-</body>
+    <script>
+        const bookingUrl = 'https://book.stripe.com/5kQ28q0KX9Vk6oX0qRfbq02';
+
+        // Detect if user is on mobile device
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                || (window.innerWidth <= 768);
+        }
+
+        // Handle booking button click
+        function handleBookingClick() {
+            if (isMobileDevice()) {
+                // Mobile user - proceed directly to booking
+                window.location.href = bookingUrl;
+            } else {
+                // Desktop user - show warning modal
+                showDesktopWarning();
+            }
+        }
+
+        // Show the desktop warning modal
+        function showDesktopWarning() {
+            const overlay = document.getElementById('desktopWarning');
+            overlay.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close the desktop warning modal
+        function closeDesktopWarning() {
+            const overlay = document.getElementById('desktopWarning');
+            overlay.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        // Proceed to booking anyway (for desktop users who have a mic)
+        function proceedAnyway() {
+            window.location.href = bookingUrl;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('desktopWarning').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDesktopWarning();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDesktopWarning();
+            }
+        });
+    </script>
+</body>    
 </html>
