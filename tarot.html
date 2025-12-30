@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .main-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            padding-top: 60px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 18px;
+            color: #d4af37;
+            min-height: 60px;
+        }
+        
+        .selection-area {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-content: center;
+            justify-content: center;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        
+        .group-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #3a3a5a;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            flex: 0 0 calc(50% - 5px);
+            max-width: 200px;
+            aspect-ratio: 3/4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .group-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .group-card:active {
+            transform: scale(0.95);
+        }
+        
+        .group-card:hover::before {
+            opacity: 1;
+        }
+        
+        .subgroup-card {
+            flex: 0 0 calc(33.333% - 7px);
+            max-width: 150px;
+            aspect-ratio: 2/3;
+            font-size: 14px;
+        }
+        
+        .final-card {
+            flex: 0 0 calc(25% - 8px);
+            max-width: 120px;
+            aspect-ratio: 2/3;
+            font-size: 12px;
+            background: linear-gradient(45deg, #1a237e, #311b92);
+        }
+        
+        .final-card.revealed {
+            background: linear-gradient(135deg, #2a4a7e, #4a5a9e);
+            border: 2px solid #d4af37;
+        }
+        
+        .final-card.revealed .card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .final-card.revealed .card-name {
+            font-size: 10px;
+            color: #d4af37;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .final-card.revealed .card-orientation {
+            font-size: 16px;
+            color: #d4af37;
+        }
+        
+        .card-count {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+        }
+        
+        .control-button {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .debug-button {
+            top: 10px;
+            left: 10px;
+            background: #2a2a3a;
+            color: white;
+        }
+        
+        .randomize-button {
+            top: 10px;
+            right: 10px;
+            background: #4a2a5a;
+            color: white;
+        }
+        
+        .back-button {
+            bottom: 20px;
+            right: 20px;
+            background: #3a3a5a;
+            color: white;
+        }
+        
+        .settings-button {
+            bottom: 20px;
+            left: 20px;
+            background: #5a3a4a;
+            color: white;
+        }
+        
+        .control-button:active {
+            transform: scale(0.95);
+        }
+        
+        .settings-panel {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #5a3a4a;
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 150;
+            display: none;
+            min-width: 250px;
+        }
+        
+        .settings-panel.show {
+            display: block;
+        }
+        
+        .settings-panel h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .setting-item {
+            margin-bottom: 15px;
+        }
+        
+        .setting-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+            font-size: 14px;
+        }
+        
+        .setting-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .setting-button {
+            flex: 1;
+            padding: 8px 15px;
+            background: #3a3a5a;
+            border: 2px solid #3a3a5a;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .setting-button.active {
+            background: #d4af37;
+            border-color: #d4af37;
+            color: #1a1a2e;
+        }
+        
+        .setting-button:hover {
+            opacity: 0.8;
+        }
+        
+        .debug-panel {
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            right: 10px;
+            max-height: 70vh;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #3a3a5a;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 150;
+            display: none;
+            font-size: 12px;
+        }
+        
+        .debug-panel.show {
+            display: block;
+        }
+        
+        .debug-panel h3 {
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .debug-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        
+        .debug-card {
+            margin-left: 20px;
+            color: #888;
+        }
+        
+        .selected-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            border: 3px solid #fff;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            z-index: 200;
+            transition: transform 0.5s ease;
+            max-width: 80vw;
+            box-shadow: 0 0 50px rgba(212,175,55,0.5);
+        }
+        
+        .selected-card.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .selected-card h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .orientation-indicator {
+            font-size: 28px;
+            color: #8b6914;
+        }
+        
+        .selected-position {
+            font-size: 14px;
+            color: #3a3a5a;
+            margin-bottom: 20px;
+        }
+        
+        .card-meanings {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .meaning-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .keyword {
+            background: rgba(26, 26, 46, 0.8);
+            color: #d4af37;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .close-button {
+            margin-top: 20px;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .reversed {
+            opacity: 0.9;
+        }
+        
+        /* Desktop mode styles */
+        .desktop-mode .header {
+            display: none;
+        }
+        
+        .desktop-mode .main-container {
+            padding-top: 70px;
+        }
+        
+        .desktop-mode .selection-area {
+            padding: 15px;
+            gap: 8px;
+            max-height: calc(100vh - 70px);
+            overflow: hidden;
+            justify-content: center;
+            align-content: start;
+        }
+        
+        .desktop-mode .group-card {
+            flex: 0 0 auto;
+            width: 70px;
+            height: 105px;
+            padding: 5px;
+            font-size: 24px;
+            background: linear-gradient(45deg, #1a237e, #311b92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #4a4a6a;
+        }
+        
+        .desktop-mode .group-card.revealed {
+            background: linear-gradient(135deg, #2a4a7e, #4a5a9e);
+            border: 2px solid #d4af37;
+        }
+        
+        .desktop-mode .group-card.revealed .card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        
+        .desktop-mode .group-card.revealed .card-name {
+            font-size: 8px;
+            color: #d4af37;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+        
+        .desktop-mode .group-card.revealed .card-orientation {
+            font-size: 14px;
+            color: #d4af37;
+        }
+        
+        .desktop-mode .final-card {
+            background: linear-gradient(45deg, #1a237e, #311b92);
+        }
+        
+        @media (min-width: 1200px) {
+            .desktop-mode .group-card {
+                width: 80px;
+                height: 120px;
+                gap: 10px;
+            }
+            
+            .desktop-mode .selection-area {
+                gap: 10px;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .group-card {
+                flex: 0 0 calc(50% - 5px);
+                font-size: 14px;
+            }
+            .subgroup-card {
+                flex: 0 0 calc(50% - 5px);
+                font-size: 12px;
+            }
+            .final-card {
+                flex: 0 0 calc(33.333% - 7px);
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header" id="header">
+            Deja que tu intuición te guíe
+        </div>
+        <div class="selection-area" id="selectionArea"></div>
+    </div>
+    
+    <button class="control-button debug-button" onclick="toggleDebug()">📋</button>
+    <button class="control-button randomize-button" onclick="randomizeCards()">🔀</button>
+    <button class="control-button back-button" id="backButton" style="display: none;" onclick="goBack()">↩️</button>
+    <button class="control-button settings-button" onclick="toggleSettings()">⚙️</button>
+    
+    <div class="debug-panel" id="debugPanel"></div>
+    
+    <div class="settings-panel" id="settingsPanel">
+        <h3 id="settingsTitle">Configuración</h3>
+        <div class="setting-item">
+            <label class="setting-label" id="languageLabel">Idioma</label>
+            <div class="setting-options">
+                <button class="setting-button active" id="langEs" onclick="setLanguage('es')">Español</button>
+                <button class="setting-button" id="langEn" onclick="setLanguage('en')">English</button>
+            </div>
+        </div>
+        <div class="setting-item">
+            <label class="setting-label" id="modeLabel">Modo</label>
+            <div class="setting-options">
+                <button class="setting-button active" id="modeMobile" onclick="setMode('mobile')">Móvil</button>
+                <button class="setting-button" id="modeDesktop" onclick="setMode('desktop')">Escritorio</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="selected-card" id="selectedCard">
+        <h2 id="selectedCardName"></h2>
+        <p class="selected-position" id="selectedPosition"></p>
+        <div class="card-meanings">
+            <div class="meaning-keywords" id="cardKeywords"></div>
+        </div>
+        <button class="close-button" onclick="closeSelection()">Cerrar</button>
+    </div>
+    
+    <script>
+        // Language and mode state
+        let currentLanguage = 'es';
+        let currentMode = 'mobile';
+        
+        // Card name translations
+        const cardTranslations = {
+            // Major Arcana
+            "El Loco": "The Fool",
+            "El Mago": "The Magician",
+            "La Sacerdotisa": "The High Priestess",
+            "La Emperatriz": "The Empress",
+            "El Emperador": "The Emperor",
+            "El Hierofante": "The Hierophant",
+            "Los Amantes": "The Lovers",
+            "El Carro": "The Chariot",
+            "La Fuerza": "Strength",
+            "El Ermitaño": "The Hermit",
+            "La Rueda de la Fortuna": "The Wheel of Fortune",
+            "La Justicia": "Justice",
+            "El Colgado": "The Hanged Man",
+            "La Muerte": "Death",
+            "La Templanza": "Temperance",
+            "El Diablo": "The Devil",
+            "La Torre": "The Tower",
+            "La Estrella": "The Star",
+            "La Luna": "The Moon",
+            "El Sol": "The Sun",
+            "El Juicio": "Judgement",
+            "El Mundo": "The World",
+            "El Maestro": "The Master",
+            // Wands
+            "As de Bastos": "Ace of Wands",
+            "2 de Bastos": "Two of Wands",
+            "3 de Bastos": "Three of Wands",
+            "4 de Bastos": "Four of Wands",
+            "5 de Bastos": "Five of Wands",
+            "6 de Bastos": "Six of Wands",
+            "7 de Bastos": "Seven of Wands",
+            "8 de Bastos": "Eight of Wands",
+            "9 de Bastos": "Nine of Wands",
+            "10 de Bastos": "Ten of Wands",
+            "Paje de Bastos": "Page of Wands",
+            "Caballero de Bastos": "Knight of Wands",
+            "Reina de Bastos": "Queen of Wands",
+            "Rey de Bastos": "King of Wands",
+            // Cups
+            "As de Copas": "Ace of Cups",
+            "2 de Copas": "Two of Cups",
+            "3 de Copas": "Three of Cups",
+            "4 de Copas": "Four of Cups",
+            "5 de Copas": "Five of Cups",
+            "6 de Copas": "Six of Cups",
+            "7 de Copas": "Seven of Cups",
+            "8 de Copas": "Eight of Cups",
+            "9 de Copas": "Nine of Cups",
+            "10 de Copas": "Ten of Cups",
+            "Paje de Copas": "Page of Cups",
+            "Caballero de Copas": "Knight of Cups",
+            "Reina de Copas": "Queen of Cups",
+            "Rey de Copas": "King of Cups",
+            // Swords
+            "As de Espadas": "Ace of Swords",
+            "2 de Espadas": "Two of Swords",
+            "3 de Espadas": "Three of Swords",
+            "4 de Espadas": "Four of Swords",
+            "5 de Espadas": "Five of Swords",
+            "6 de Espadas": "Six of Swords",
+            "7 de Espadas": "Seven of Swords",
+            "8 de Espadas": "Eight of Swords",
+            "9 de Espadas": "Nine of Swords",
+            "10 de Espadas": "Ten of Swords",
+            "Paje de Espadas": "Page of Swords",
+            "Caballero de Espadas": "Knight of Swords",
+            "Reina de Espadas": "Queen of Swords",
+            "Rey de Espadas": "King of Swords",
+            // Pentacles
+            "As de Oros": "Ace of Pentacles",
+            "2 de Oros": "Two of Pentacles",
+            "3 de Oros": "Three of Pentacles",
+            "4 de Oros": "Four of Pentacles",
+            "5 de Oros": "Five of Pentacles",
+            "6 de Oros": "Six of Pentacles",
+            "7 de Oros": "Seven of Pentacles",
+            "8 de Oros": "Eight of Pentacles",
+            "9 de Oros": "Nine of Pentacles",
+            "10 de Oros": "Ten of Pentacles",
+            "Paje de Oros": "Page of Pentacles",
+            "Caballero de Oros": "Knight of Pentacles",
+            "Reina de Oros": "Queen of Pentacles",
+            "Rey de Oros": "King of Pentacles"
+        };
+        
+        // UI text translations
+        const uiTranslations = {
+            es: {
+                header: {
+                    initial: "Deja que tu intuición te guíe",
+                    level1: "Siente la energía de cada grupo",
+                    level2: "Acércate más a tu carta",
+                    final: "Toca la carta que te llama",
+                    desktop: "Selecciona tu carta"
+                },
+                settings: "Configuración",
+                language: "Idioma",
+                mode: "Modo",
+                mobile: "Móvil",
+                desktop: "Escritorio",
+                group: "Grupo",
+                subgroup: "Subgrupo",
+                cards: "cartas",
+                position: "Posición",
+                inDeck: "en la baraja",
+                close: "Cerrar",
+                fixedOrder: "Orden Fijo de las Cartas",
+                cardsRange: "Cartas"
+            },
+            en: {
+                header: {
+                    initial: "Let your intuition guide you",
+                    level1: "Feel the energy of each group",
+                    level2: "Get closer to your card",
+                    final: "Touch the card that calls you",
+                    desktop: "Select your card"
+                },
+                settings: "Settings",
+                language: "Language",
+                mode: "Mode",
+                mobile: "Mobile",
+                desktop: "Desktop",
+                group: "Group",
+                subgroup: "Subgroup",
+                cards: "cards",
+                position: "Position",
+                inDeck: "in the deck",
+                close: "Close",
+                fixedOrder: "Fixed Card Order",
+                cardsRange: "Cards"
+            }
+        };
+        
+        const cardMeanings = {
+            // Arcanos Mayores
+            "El Loco": {
+                upright: ["Nuevos comienzos", "Espontaneidad", "Inocencia", "Libertad", "Aventura"],
+                reversed: ["Imprudencia", "Riesgo", "Caos", "Ingenuidad", "Locura"]
+            },
+            "El Mago": {
+                upright: ["Poder", "Habilidad", "Concentración", "Acción", "Recursos"],
+                reversed: ["Manipulación", "Engaño", "Talento desperdiciado", "Ilusión", "Confusión"]
+            },
+            "La Sacerdotisa": {
+                upright: ["Intuición", "Misterio", "Sabiduría interior", "Espiritualidad", "Secretos"],
+                reversed: ["Secretos ocultos", "Desconexión", "Confusión", "Superficialidad", "Represión"]
+            },
+            "La Emperatriz": {
+                upright: ["Fertilidad", "Abundancia", "Naturaleza", "Creatividad", "Nutrición"],
+                reversed: ["Bloqueo creativo", "Dependencia", "Esterilidad", "Negligencia", "Inseguridad"]
+            },
+            "El Emperador": {
+                upright: ["Autoridad", "Estructura", "Control", "Paternidad", "Estabilidad"],
+                reversed: ["Tiranía", "Rigidez", "Frialdad", "Dominación", "Inflexibilidad"]
+            },
+            "El Hierofante": {
+                upright: ["Tradición", "Conformidad", "Moralidad", "Ética", "Espiritualidad"],
+                reversed: ["Rebeldía", "Subversión", "Nuevos métodos", "Libertad", "Rechazo"]
+            },
+            "Los Amantes": {
+                upright: ["Amor", "Armonía", "Relaciones", "Valores", "Elección"],
+                reversed: ["Desarmonía", "Desequilibrio", "Conflicto", "Separación", "Malas decisiones"]
+            },
+            "El Carro": {
+                upright: ["Control", "Fuerza de voluntad", "Victoria", "Determinación", "Éxito"],
+                reversed: ["Falta de control", "Agresión", "Obstáculos", "Fracaso", "Derrota"]
+            },
+            "La Fuerza": {
+                upright: ["Fuerza interior", "Coraje", "Paciencia", "Control", "Compasión"],
+                reversed: ["Debilidad", "Inseguridad", "Dudas", "Falta de disciplina", "Cobardía"]
+            },
+            "El Ermitaño": {
+                upright: ["Búsqueda interior", "Guía", "Soledad", "Introspección", "Sabiduría"],
+                reversed: ["Aislamiento", "Soledad", "Rechazo", "Antisocial", "Obstinación"]
+            },
+            "La Rueda de la Fortuna": {
+                upright: ["Suerte", "Karma", "Ciclos", "Destino", "Cambio"],
+                reversed: ["Mala suerte", "Falta de control", "Retrasos", "Resistencia", "Estancamiento"]
+            },
+            "La Justicia": {
+                upright: ["Justicia", "Equidad", "Verdad", "Ley", "Balance"],
+                reversed: ["Injusticia", "Deshonestidad", "Responsabilidad", "Prejuicio", "Desequilibrio"]
+            },
+            "El Colgado": {
+                upright: ["Sacrificio", "Liberación", "Martirio", "Pausa", "Nueva perspectiva"],
+                reversed: ["Estancamiento", "Resistencia", "Indecisión", "Retraso", "Sacrificio inútil"]
+            },
+            "La Muerte": {
+                upright: ["Fin", "Transformación", "Transición", "Liberación", "Renacimiento"],
+                reversed: ["Resistencia al cambio", "Estancamiento", "Miedo", "Apego", "Decadencia"]
+            },
+            "La Templanza": {
+                upright: ["Balance", "Moderación", "Paciencia", "Propósito", "Alquimia"],
+                reversed: ["Desequilibrio", "Exceso", "Impaciencia", "Discordia", "Conflicto"]
+            },
+            "El Diablo": {
+                upright: ["Esclavitud", "Materialismo", "Sexualidad", "Apego", "Adicción"],
+                reversed: ["Liberación", "Poder recuperado", "Libertad", "Divorcio", "Reclamación"]
+            },
+            "La Torre": {
+                upright: ["Destrucción", "Caos", "Revelación", "Despertar", "Cambio repentino"],
+                reversed: ["Desastre evitado", "Retraso", "Resistencia", "Miedo al cambio", "Opresión"]
+            },
+            "La Estrella": {
+                upright: ["Esperanza", "Fe", "Propósito", "Renovación", "Espiritualidad"],
+                reversed: ["Desesperanza", "Falta de fe", "Desánimo", "Inseguridad", "Pesimismo"]
+            },
+            "La Luna": {
+                upright: ["Ilusión", "Miedo", "Ansiedad", "Subconsciente", "Intuición"],
+                reversed: ["Confusión", "Miedo liberado", "Malentendido", "Claridad", "Verdad"]
+            },
+            "El Sol": {
+                upright: ["Alegría", "Éxito", "Vitalidad", "Iluminación", "Calidez"],
+                reversed: ["Negatividad", "Depresión", "Tristeza", "Ego", "Optimismo excesivo"]
+            },
+            "El Juicio": {
+                upright: ["Reflexión", "Evaluación", "Despertar", "Renacimiento", "Decisión"],
+                reversed: ["Autocrítica", "Duda", "Incapacidad de perdonar", "Culpa", "Estancamiento"]
+            },
+            "El Mundo": {
+                upright: ["Finalización", "Logro", "Viaje", "Plenitud", "Éxito"],
+                reversed: ["Incompletitud", "Falta de cierre", "Retrasos", "Falta de logro", "Estancamiento"]
+            },
+            "El Maestro": {
+                upright: ["Maestría", "Enseñanza", "Guía", "Sabiduría", "Experiencia"],
+                reversed: ["Estudiante eterno", "Falta de confianza", "Conocimiento sin aplicar", "Ego", "Falsedad"]
+            },
+            // Bastos
+            "As de Bastos": {
+                upright: ["Inspiración", "Poder", "Creación", "Crecimiento", "Potencial"],
+                reversed: ["Retrasos", "Falta de dirección", "Distracción", "Confusión", "Falta de pasión"]
+            },
+            "2 de Bastos": {
+                upright: ["Planificación", "Decisiones", "Dejando la comodidad", "Viaje", "Descubrimiento"],
+                reversed: ["Miedo al cambio", "Indecisión", "Mala planificación", "Falta de opciones", "Cautela"]
+            },
+            "3 de Bastos": {
+                upright: ["Expansión", "Previsión", "Comercio", "Liderazgo", "Visión"],
+                reversed: ["Obstáculos", "Retrasos", "Frustración", "Falta de previsión", "Decepción"]
+            },
+            "4 de Bastos": {
+                upright: ["Celebración", "Armonía", "Matrimonio", "Hogar", "Comunidad"],
+                reversed: ["Conflicto", "Transición", "Falta de apoyo", "Inestabilidad", "Inseguridad"]
+            },
+            "5 de Bastos": {
+                upright: ["Conflicto", "Desacuerdos", "Competencia", "Tensión", "Diversidad"],
+                reversed: ["Evitar conflicto", "Respeto", "Acuerdo", "Tregua", "Paz interior"]
+            },
+            "6 de Bastos": {
+                upright: ["Victoria", "Éxito", "Reconocimiento", "Progreso", "Autoestima"],
+                reversed: ["Ego", "Falta de reconocimiento", "Castigo", "Mal uso del poder", "Caída"]
+            },
+            "7 de Bastos": {
+                upright: ["Desafío", "Perseverancia", "Defensa", "Mantener el control", "Determinación"],
+                reversed: ["Ceder", "Sentirse abrumado", "Rendirse", "Admitir derrota", "Agotamiento"]
+            },
+            "8 de Bastos": {
+                upright: ["Movimiento", "Acción rápida", "Cambio", "Viaje aéreo", "Comunicación"],
+                reversed: ["Retrasos", "Frustración", "Espera", "Prisa", "Falta de control"]
+            },
+            "9 de Bastos": {
+                upright: ["Resistencia", "Persistencia", "Prueba final", "Límites", "Fatiga"],
+                reversed: ["Agotamiento", "Rendición", "Abrumado", "Defensivo", "Paranoia"]
+            },
+            "10 de Bastos": {
+                upright: ["Carga", "Responsabilidad", "Trabajo duro", "Estrés", "Logro"],
+                reversed: ["Liberación", "Delegar", "Compartir la carga", "Abrumado", "Colapso"]
+            },
+            "Paje de Bastos": {
+                upright: ["Exploración", "Emoción", "Libertad", "Aventura", "Pasión"],
+                reversed: ["Falta de dirección", "Procrastinación", "Impaciencia", "Riesgos", "Hastío"]
+            },
+            "Caballero de Bastos": {
+                upright: ["Energía", "Pasión", "Aventura", "Impulsividad", "Acción"],
+                reversed: ["Ira", "Impulsividad", "Frustración", "Retrasos", "Arrogancia"]
+            },
+            "Reina de Bastos": {
+                upright: ["Coraje", "Determinación", "Calidez", "Vibrante", "Liderazgo"],
+                reversed: ["Egoísmo", "Celos", "Inseguridad", "Malicia", "Infidelidad"]
+            },
+            "Rey de Bastos": {
+                upright: ["Liderazgo", "Visión", "Emprendedor", "Honor", "Control"],
+                reversed: ["Impulsividad", "Prisa", "Temperamento", "Dominante", "Tirano"]
+            },
+            // Copas
+            "As de Copas": {
+                upright: ["Amor", "Compasión", "Creatividad", "Emociones", "Intuición"],
+                reversed: ["Amor propio", "Vacío emocional", "Creatividad bloqueada", "Tristeza", "Represión"]
+            },
+            "2 de Copas": {
+                upright: ["Unión", "Asociación", "Conexión", "Amor", "Atracción"],
+                reversed: ["Desequilibrio", "Ruptura", "Desunión", "Desconfianza", "Tensión"]
+            },
+            "3 de Copas": {
+                upright: ["Amistad", "Celebración", "Creatividad", "Comunidad", "Colaboración"],
+                reversed: ["Exceso", "Chismes", "Aislamiento", "Sobreindulgencia", "Imbalance"]
+            },
+            "4 de Copas": {
+                upright: ["Contemplación", "Apatía", "Reevaluación", "Meditación", "Aburrimiento"],
+                reversed: ["Retiro", "Retiro espiritual", "Revelación", "Aceptación", "Despertar"]
+            },
+            "5 de Copas": {
+                upright: ["Pérdida", "Pesar", "Decepción", "Duelo", "Tristeza"],
+                reversed: ["Aceptación", "Seguir adelante", "Encontrar paz", "Perdón", "Curación"]
+            },
+            "6 de Copas": {
+                upright: ["Nostalgia", "Recuerdos", "Niñez", "Inocencia", "Alegría"],
+                reversed: ["Vivir en el pasado", "Ingenuidad", "Irrealismo", "Falta de crecimiento", "Idealización"]
+            },
+            "7 de Copas": {
+                upright: ["Ilusión", "Elecciones", "Imaginación", "Ilusión", "Sueños"],
+                reversed: ["Claridad", "Elección", "Realidad", "Concentración", "Sobriedad"]
+            },
+            "8 de Copas": {
+                upright: ["Abandono", "Retiro", "Escapismo", "Desilusión", "Dejar atrás"],
+                reversed: ["Evitación", "Miedo al cambio", "Inercia", "Fake happiness", "Indecisión"]
+            },
+            "9 de Copas": {
+                upright: ["Contentamiento", "Satisfacción", "Gratitud", "Deseo cumplido", "Lujo"],
+                reversed: ["Codicia", "Disatisfacción", "Materialismo", "Indulgencia", "Superficialidad"]
+            },
+            "10 de Copas": {
+                upright: ["Armonía", "Matrimonio", "Felicidad", "Alineación", "Familia"],
+                reversed: ["Desalineación", "Valores rotos", "Lucha", "Desconexión", "Aislamiento"]
+            },
+            "Paje de Copas": {
+                upright: ["Creatividad", "Romance", "Encanto", "Imaginación", "Sorpresa"],
+                reversed: ["Inmadurez emocional", "Inseguridad", "Falta de creatividad", "Vacío", "Mal humor"]
+            },
+            "Caballero de Copas": {
+                upright: ["Romance", "Aventura", "Seguir el corazón", "Idealista", "Encanto"],
+                reversed: ["Mal humor", "Desilusión", "Celos", "Irrealidad", "Engaño"]
+            },
+            "Reina de Copas": {
+                upright: ["Compasión", "Calma", "Comodidad", "Intuición", "Curación"],
+                reversed: ["Martir", "Inseguridad", "Dependencia", "Mal humor", "Fantasía"]
+            },
+            "Rey de Copas": {
+                upright: ["Control emocional", "Balance", "Generosidad", "Compasión", "Diplomacia"],
+                reversed: ["Mal humor", "Volatilidad", "Manipulación", "Ansiedad", "Frialdad"]
+            },
+            // Espadas
+            "As de Espadas": {
+                upright: ["Claridad mental", "Verdad", "Justicia", "Comunicación", "Nuevas ideas"],
+                reversed: ["Confusión", "Caos", "Falta de claridad", "Brutalidad", "Mal uso del poder"]
+            },
+            "2 de Espadas": {
+                upright: ["Decisión difícil", "Indecisión", "Estancamiento", "Tregua", "Balance"],
+                reversed: ["Indecisión", "Confusión", "Sobrecarga de información", "Emociones", "Bloqueo"]
+            },
+            "3 de Espadas": {
+                upright: ["Desamor", "Dolor emocional", "Dolor", "Pena", "Duelo"],
+                reversed: ["Curación", "Perdón", "Liberación del dolor", "Optimismo", "Aceptación"]
+            },
+            "4 de Espadas": {
+                upright: ["Descanso", "Relajación", "Meditación", "Contemplación", "Pasividad"],
+                reversed: ["Agotamiento", "Burnout", "Inquietud", "Falta de progreso", "Frustración"]
+            },
+            "5 de Espadas": {
+                upright: ["Conflicto", "Tensión", "Pérdida", "Derrota", "Ganar a toda costa"],
+                reversed: ["Reconciliación", "Hacer las paces", "Perdón", "Compromiso", "Resolución"]
+            },
+            "6 de Espadas": {
+                upright: ["Transición", "Cambio", "Alejarse", "Superar", "Viaje"],
+                reversed: ["Bagaje emocional", "Resistencia", "Transición difícil", "Falta de progreso", "Inestabilidad"]
+            },
+            "7 de Espadas": {
+                upright: ["Traición", "Engaño", "Sigilo", "Estrategia", "Astucia"],
+                reversed: ["Confesión", "Conciencia", "Regreso", "Estrategia fallida", "Paranoia"]
+            },
+            "8 de Espadas": {
+                upright: ["Restricción", "Prisión", "Víctima", "Parálisis", "Impotencia"],
+                reversed: ["Autolimitación", "Liberación", "Nuevas perspectivas", "Libertad", "Escape"]
+            },
+            "9 de Espadas": {
+                upright: ["Ansiedad", "Preocupación", "Miedo", "Depresión", "Pesadillas"],
+                reversed: ["Esperanza", "Alcanzar ayuda", "Superar depresión", "Liberación", "Recuperación"]
+            },
+            "10 de Espadas": {
+                upright: ["Traición", "Fin", "Pérdida", "Crisis", "Traición dolorosa"],
+                reversed: ["Recuperación", "Regeneración", "Resistencia", "Superar lo peor", "Despegarse"]
+            },
+            "Paje de Espadas": {
+                upright: ["Curiosidad", "Inquietud", "Comunicación", "Nuevas ideas", "Sed de conocimiento"],
+                reversed: ["Comunicación deficiente", "Chismes", "Mentiras", "Falta de planificación", "Impulsividad"]
+            },
+            "Caballero de Espadas": {
+                upright: ["Acción", "Impulsividad", "Defensa", "Valentía desafiante", "Héroe"],
+                reversed: ["Falta de tacto", "Agresión", "Bullying", "Tiranía", "Conflicto"]
+            },
+            "Reina de Espadas": {
+                upright: ["Complejidad", "Perceptividad", "Mente clara", "Franqueza", "Independencia"],
+                reversed: ["Frialdad", "Crueldad", "Amargura", "Manipulación", "Crítica excesiva"]
+            },
+            "Rey de Espadas": {
+                upright: ["Claridad mental", "Autoridad intelectual", "Verdad", "Justicia", "Poder mental"],
+                reversed: ["Manipulación", "Crueldad", "Debilidad", "Injusticia", "Abuso de poder"]
+            },
+            // Oros
+            "As de Oros": {
+                upright: ["Oportunidad", "Prosperidad", "Nuevo emprendimiento", "Manifestación", "Abundancia"],
+                reversed: ["Oportunidad perdida", "Falta de planificación", "Recursos limitados", "Escasez", "Deficiencia"]
+            },
+            "2 de Oros": {
+                upright: ["Balance", "Prioridades", "Adaptabilidad", "Manejo del tiempo", "Flexibilidad"],
+                reversed: ["Desorganización", "Prioridades financieras", "Abrumado", "Pérdida de balance", "Sobrecarga"]
+            },
+            "3 de Oros": {
+                upright: ["Trabajo en equipo", "Colaboración", "Aprendizaje", "Implementación", "Esfuerzo"],
+                reversed: ["Falta de trabajo en equipo", "Desorganización", "Conflicto grupal", "Competencia", "Falta de crecimiento"]
+            },
+            "4 de Oros": {
+                upright: ["Conservación", "Frugalidad", "Seguridad", "Control", "Estabilidad"],
+                reversed: ["Codicia", "Materialismo", "Autoprotección", "Posesividad", "Control financiero"]
+            },
+            "5 de Oros": {
+                upright: ["Necesidad", "Pobreza", "Inseguridad", "Preocupación", "Aislamiento"],
+                reversed: ["Recuperación", "Caridad", "Mejora", "Empleabilidad", "Superación"]
+            },
+            "6 de Oros": {
+                upright: ["Generosidad", "Caridad", "Compartir", "Justicia", "Prosperidad"],
+                reversed: ["Egoísmo", "Deuda", "Caridad con cuerdas", "Desigualdad", "Extorsión"]
+            },
+            "7 de Oros": {
+                upright: ["Paciencia", "Perseverancia", "Recompensa", "Inversión", "Crecimiento"],
+                reversed: ["Falta de recompensa", "Impaciencia", "Falta de crecimiento", "Frustración", "Inversiones malas"]
+            },
+            "8 de Oros": {
+                upright: ["Maestría", "Habilidad", "Artesanía", "Calidad", "Perfeccionismo"],
+                reversed: ["Falta de concentración", "Pereza", "Trabajo mediocre", "Ambición sin habilidad", "Vanidad"]
+            },
+            "9 de Oros": {
+                upright: ["Abundancia", "Lujo", "Autosuficiencia", "Disciplina financiera", "Logros"],
+                reversed: ["Revés financiero", "Vivir más allá de los medios", "Falsas apariencias", "Falta de disciplina", "Superficialidad"]
+            },
+            "10 de Oros": {
+                upright: ["Riqueza", "Herencia", "Familia", "Establecimiento", "Legado"],
+                reversed: ["Pérdida financiera", "Falta de estabilidad", "Falta de recursos", "Disputa familiar", "Bancarrota"]
+            },
+            "Paje de Oros": {
+                upright: ["Oportunidad financiera", "Desarrollo de habilidades", "Ambición", "Nuevo trabajo", "Manifestación"],
+                reversed: ["Falta de progreso", "Procrastinación", "Aprender de los errores", "Malas noticias", "Falta de compromiso"]
+            },
+            "Caballero de Oros": {
+                upright: ["Eficiencia", "Trabajo duro", "Responsabilidad", "Conservadurismo", "Metodicidad"],
+                reversed: ["Adicción al trabajo", "Aburrimiento", "Sentirse atrapado", "Perfeccionismo", "Obsesión"]
+            },
+            "Reina de Oros": {
+                upright: ["Practicidad", "Criatura de confort", "Seguridad financiera", "Trabajo duro", "Maternidad"],
+                reversed: ["Autocentrada", "Celosa", "Resentida", "Insegura financieramente", "Materialista"]
+            },
+            "Rey de Oros": {
+                upright: ["Abundancia", "Prosperidad", "Seguridad", "Liderazgo", "Éxito"],
+                reversed: ["Codicia", "Indulgencia", "Sensualidad", "Materialismo obsesivo", "Terquedad"]
+            }
+        };
+        
+        // English card meanings
+        const cardMeaningsEn = {
+            // Major Arcana
+            "El Loco": {
+                upright: ["New beginnings", "Spontaneity", "Innocence", "Freedom", "Adventure"],
+                reversed: ["Recklessness", "Risk", "Chaos", "Naivety", "Foolishness"]
+            },
+            "El Mago": {
+                upright: ["Power", "Skill", "Concentration", "Action", "Resources"],
+                reversed: ["Manipulation", "Deception", "Wasted talent", "Illusion", "Confusion"]
+            },
+            "La Sacerdotisa": {
+                upright: ["Intuition", "Mystery", "Inner wisdom", "Spirituality", "Secrets"],
+                reversed: ["Hidden secrets", "Disconnection", "Confusion", "Superficiality", "Repression"]
+            },
+            "La Emperatriz": {
+                upright: ["Fertility", "Abundance", "Nature", "Creativity", "Nurturing"],
+                reversed: ["Creative block", "Dependence", "Infertility", "Negligence", "Insecurity"]
+            },
+            "El Emperador": {
+                upright: ["Authority", "Structure", "Control", "Fatherhood", "Stability"],
+                reversed: ["Tyranny", "Rigidity", "Coldness", "Domination", "Inflexibility"]
+            },
+            "El Hierofante": {
+                upright: ["Tradition", "Conformity", "Morality", "Ethics", "Spirituality"],
+                reversed: ["Rebellion", "Subversion", "New methods", "Freedom", "Rejection"]
+            },
+            "Los Amantes": {
+                upright: ["Love", "Harmony", "Relationships", "Values", "Choice"],
+                reversed: ["Disharmony", "Imbalance", "Conflict", "Separation", "Bad decisions"]
+            },
+            "El Carro": {
+                upright: ["Control", "Willpower", "Victory", "Determination", "Success"],
+                reversed: ["Lack of control", "Aggression", "Obstacles", "Failure", "Defeat"]
+            },
+            "La Fuerza": {
+                upright: ["Inner strength", "Courage", "Patience", "Control", "Compassion"],
+                reversed: ["Weakness", "Insecurity", "Doubts", "Lack of discipline", "Cowardice"]
+            },
+            "El Ermitaño": {
+                upright: ["Soul searching", "Guidance", "Solitude", "Introspection", "Wisdom"],
+                reversed: ["Isolation", "Loneliness", "Rejection", "Anti-social", "Obstinacy"]
+            },
+            "La Rueda de la Fortuna": {
+                upright: ["Luck", "Karma", "Cycles", "Destiny", "Change"],
+                reversed: ["Bad luck", "Lack of control", "Delays", "Resistance", "Stagnation"]
+            },
+            "La Justicia": {
+                upright: ["Justice", "Fairness", "Truth", "Law", "Balance"],
+                reversed: ["Injustice", "Dishonesty", "Accountability", "Prejudice", "Imbalance"]
+            },
+            "El Colgado": {
+                upright: ["Sacrifice", "Release", "Martyrdom", "Pause", "New perspective"],
+                reversed: ["Stagnation", "Resistance", "Indecision", "Delay", "Useless sacrifice"]
+            },
+            "La Muerte": {
+                upright: ["End", "Transformation", "Transition", "Release", "Rebirth"],
+                reversed: ["Resistance to change", "Stagnation", "Fear", "Attachment", "Decay"]
+            },
+            "La Templanza": {
+                upright: ["Balance", "Moderation", "Patience", "Purpose", "Alchemy"],
+                reversed: ["Imbalance", "Excess", "Impatience", "Discord", "Conflict"]
+            },
+            "El Diablo": {
+                upright: ["Bondage", "Materialism", "Sexuality", "Attachment", "Addiction"],
+                reversed: ["Liberation", "Reclaimed power", "Freedom", "Divorce", "Reclamation"]
+            },
+            "La Torre": {
+                upright: ["Destruction", "Chaos", "Revelation", "Awakening", "Sudden change"],
+                reversed: ["Disaster avoided", "Delay", "Resistance", "Fear of change", "Oppression"]
+            },
+            "La Estrella": {
+                upright: ["Hope", "Faith", "Purpose", "Renewal", "Spirituality"],
+                reversed: ["Hopelessness", "Lack of faith", "Discouragement", "Insecurity", "Pessimism"]
+            },
+            "La Luna": {
+                upright: ["Illusion", "Fear", "Anxiety", "Subconscious", "Intuition"],
+                reversed: ["Confusion", "Released fear", "Misunderstanding", "Clarity", "Truth"]
+            },
+            "El Sol": {
+                upright: ["Joy", "Success", "Vitality", "Enlightenment", "Warmth"],
+                reversed: ["Negativity", "Depression", "Sadness", "Ego", "Excessive optimism"]
+            },
+            "El Juicio": {
+                upright: ["Reflection", "Evaluation", "Awakening", "Rebirth", "Decision"],
+                reversed: ["Self-criticism", "Doubt", "Inability to forgive", "Guilt", "Stagnation"]
+            },
+            "El Mundo": {
+                upright: ["Completion", "Achievement", "Journey", "Fulfillment", "Success"],
+                reversed: ["Incompleteness", "Lack of closure", "Delays", "Lack of achievement", "Stagnation"]
+            },
+            "El Maestro": {
+                upright: ["Mastery", "Teaching", "Guidance", "Wisdom", "Experience"],
+                reversed: ["Eternal student", "Lack of confidence", "Unapplied knowledge", "Ego", "Falsehood"]
+            },
+            // Wands
+            "As de Bastos": {
+                upright: ["Inspiration", "Power", "Creation", "Growth", "Potential"],
+                reversed: ["Delays", "Lack of direction", "Distraction", "Confusion", "Lack of passion"]
+            },
+            "2 de Bastos": {
+                upright: ["Planning", "Decisions", "Leaving comfort", "Travel", "Discovery"],
+                reversed: ["Fear of change", "Indecision", "Poor planning", "Lack of options", "Caution"]
+            },
+            "3 de Bastos": {
+                upright: ["Expansion", "Foresight", "Trade", "Leadership", "Vision"],
+                reversed: ["Obstacles", "Delays", "Frustration", "Lack of foresight", "Disappointment"]
+            },
+            "4 de Bastos": {
+                upright: ["Celebration", "Harmony", "Marriage", "Home", "Community"],
+                reversed: ["Conflict", "Transition", "Lack of support", "Instability", "Insecurity"]
+            },
+            "5 de Bastos": {
+                upright: ["Conflict", "Disagreements", "Competition", "Tension", "Diversity"],
+                reversed: ["Avoiding conflict", "Respect", "Agreement", "Truce", "Inner peace"]
+            },
+            "6 de Bastos": {
+                upright: ["Victory", "Success", "Recognition", "Progress", "Self-esteem"],
+                reversed: ["Ego", "Lack of recognition", "Punishment", "Misuse of power", "Fall"]
+            },
+            "7 de Bastos": {
+                upright: ["Challenge", "Perseverance", "Defense", "Maintaining control", "Determination"],
+                reversed: ["Giving up", "Feeling overwhelmed", "Surrender", "Admitting defeat", "Exhaustion"]
+            },
+            "8 de Bastos": {
+                upright: ["Movement", "Quick action", "Change", "Air travel", "Communication"],
+                reversed: ["Delays", "Frustration", "Waiting", "Haste", "Lack of control"]
+            },
+            "9 de Bastos": {
+                upright: ["Resilience", "Persistence", "Final test", "Boundaries", "Fatigue"],
+                reversed: ["Exhaustion", "Surrender", "Overwhelmed", "Defensive", "Paranoia"]
+            },
+            "10 de Bastos": {
+                upright: ["Burden", "Responsibility", "Hard work", "Stress", "Achievement"],
+                reversed: ["Release", "Delegation", "Sharing the load", "Overwhelmed", "Collapse"]
+            },
+            "Paje de Bastos": {
+                upright: ["Exploration", "Excitement", "Freedom", "Adventure", "Passion"],
+                reversed: ["Lack of direction", "Procrastination", "Impatience", "Risks", "Boredom"]
+            },
+            "Caballero de Bastos": {
+                upright: ["Energy", "Passion", "Adventure", "Impulsiveness", "Action"],
+                reversed: ["Anger", "Impulsiveness", "Frustration", "Delays", "Arrogance"]
+            },
+            "Reina de Bastos": {
+                upright: ["Courage", "Determination", "Warmth", "Vibrant", "Leadership"],
+                reversed: ["Selfishness", "Jealousy", "Insecurity", "Malice", "Infidelity"]
+            },
+            "Rey de Bastos": {
+                upright: ["Leadership", "Vision", "Entrepreneur", "Honor", "Control"],
+                reversed: ["Impulsiveness", "Haste", "Temper", "Domineering", "Tyrant"]
+            },
+            // Cups
+            "As de Copas": {
+                upright: ["Love", "Compassion", "Creativity", "Emotions", "Intuition"],
+                reversed: ["Self-love", "Emotional emptiness", "Blocked creativity", "Sadness", "Repression"]
+            },
+            "2 de Copas": {
+                upright: ["Union", "Partnership", "Connection", "Love", "Attraction"],
+                reversed: ["Imbalance", "Break-up", "Disunion", "Distrust", "Tension"]
+            },
+            "3 de Copas": {
+                upright: ["Friendship", "Celebration", "Creativity", "Community", "Collaboration"],
+                reversed: ["Excess", "Gossip", "Isolation", "Overindulgence", "Imbalance"]
+            },
+            "4 de Copas": {
+                upright: ["Contemplation", "Apathy", "Re-evaluation", "Meditation", "Boredom"],
+                reversed: ["Retreat", "Spiritual retreat", "Revelation", "Acceptance", "Awakening"]
+            },
+            "5 de Copas": {
+                upright: ["Loss", "Grief", "Disappointment", "Mourning", "Sadness"],
+                reversed: ["Acceptance", "Moving on", "Finding peace", "Forgiveness", "Healing"]
+            },
+            "6 de Copas": {
+                upright: ["Nostalgia", "Memories", "Childhood", "Innocence", "Joy"],
+                reversed: ["Living in the past", "Naivety", "Unrealism", "Lack of growth", "Idealization"]
+            },
+            "7 de Copas": {
+                upright: ["Illusion", "Choices", "Imagination", "Wishful thinking", "Dreams"],
+                reversed: ["Clarity", "Choice", "Reality", "Focus", "Sobriety"]
+            },
+            "8 de Copas": {
+                upright: ["Abandonment", "Withdrawal", "Escapism", "Disappointment", "Leaving behind"],
+                reversed: ["Avoidance", "Fear of change", "Inertia", "Fake happiness", "Indecision"]
+            },
+            "9 de Copas": {
+                upright: ["Contentment", "Satisfaction", "Gratitude", "Wish fulfilled", "Luxury"],
+                reversed: ["Greed", "Dissatisfaction", "Materialism", "Indulgence", "Superficiality"]
+            },
+            "10 de Copas": {
+                upright: ["Harmony", "Marriage", "Happiness", "Alignment", "Family"],
+                reversed: ["Misalignment", "Broken values", "Struggle", "Disconnection", "Isolation"]
+            },
+            "Paje de Copas": {
+                upright: ["Creativity", "Romance", "Charm", "Imagination", "Surprise"],
+                reversed: ["Emotional immaturity", "Insecurity", "Lack of creativity", "Emptiness", "Moodiness"]
+            },
+            "Caballero de Copas": {
+                upright: ["Romance", "Adventure", "Following the heart", "Idealist", "Charm"],
+                reversed: ["Moodiness", "Disappointment", "Jealousy", "Unrealistic", "Deception"]
+            },
+            "Reina de Copas": {
+                upright: ["Compassion", "Calm", "Comfort", "Intuition", "Healing"],
+                reversed: ["Martyr", "Insecurity", "Dependence", "Moodiness", "Fantasy"]
+            },
+            "Rey de Copas": {
+                upright: ["Emotional control", "Balance", "Generosity", "Compassion", "Diplomacy"],
+                reversed: ["Moodiness", "Volatility", "Manipulation", "Anxiety", "Coldness"]
+            },
+            // Swords
+            "As de Espadas": {
+                upright: ["Mental clarity", "Truth", "Justice", "Communication", "New ideas"],
+                reversed: ["Confusion", "Chaos", "Lack of clarity", "Brutality", "Misuse of power"]
+            },
+            "2 de Espadas": {
+                upright: ["Difficult decision", "Indecision", "Stalemate", "Truce", "Balance"],
+                reversed: ["Indecision", "Confusion", "Information overload", "Emotions", "Blocked"]
+            },
+            "3 de Espadas": {
+                upright: ["Heartbreak", "Emotional pain", "Sorrow", "Grief", "Hurt"],
+                reversed: ["Healing", "Forgiveness", "Releasing pain", "Optimism", "Acceptance"]
+            },
+            "4 de Espadas": {
+                upright: ["Rest", "Relaxation", "Meditation", "Contemplation", "Passivity"],
+                reversed: ["Exhaustion", "Burnout", "Restlessness", "Lack of progress", "Frustration"]
+            },
+            "5 de Espadas": {
+                upright: ["Conflict", "Tension", "Loss", "Defeat", "Win at all costs"],
+                reversed: ["Reconciliation", "Making amends", "Forgiveness", "Compromise", "Resolution"]
+            },
+            "6 de Espadas": {
+                upright: ["Transition", "Change", "Moving away", "Overcoming", "Journey"],
+                reversed: ["Emotional baggage", "Resistance", "Difficult transition", "Lack of progress", "Instability"]
+            },
+            "7 de Espadas": {
+                upright: ["Betrayal", "Deception", "Stealth", "Strategy", "Cunning"],
+                reversed: ["Confession", "Conscience", "Return", "Failed strategy", "Paranoia"]
+            },
+            "8 de Espadas": {
+                upright: ["Restriction", "Imprisonment", "Victim", "Paralysis", "Helplessness"],
+                reversed: ["Self-limiting", "Liberation", "New perspectives", "Freedom", "Escape"]
+            },
+            "9 de Espadas": {
+                upright: ["Anxiety", "Worry", "Fear", "Depression", "Nightmares"],
+                reversed: ["Hope", "Reaching out", "Overcoming depression", "Release", "Recovery"]
+            },
+            "10 de Espadas": {
+                upright: ["Betrayal", "End", "Loss", "Crisis", "Painful betrayal"],
+                reversed: ["Recovery", "Regeneration", "Resistance", "Overcoming the worst", "Moving on"]
+            },
+            "Paje de Espadas": {
+                upright: ["Curiosity", "Restlessness", "Communication", "New ideas", "Thirst for knowledge"],
+                reversed: ["Poor communication", "Gossip", "Lies", "Lack of planning", "Impulsiveness"]
+            },
+            "Caballero de Espadas": {
+                upright: ["Action", "Impulsiveness", "Defense", "Heroic courage", "Hero"],
+                reversed: ["No tact", "Aggression", "Bullying", "Tyranny", "Conflict"]
+            },
+            "Reina de Espadas": {
+                upright: ["Complexity", "Perceptiveness", "Clear mind", "Directness", "Independence"],
+                reversed: ["Coldness", "Cruelty", "Bitterness", "Manipulation", "Excessive criticism"]
+            },
+            "Rey de Espadas": {
+                upright: ["Mental clarity", "Intellectual authority", "Truth", "Justice", "Mental power"],
+                reversed: ["Manipulation", "Cruelty", "Weakness", "Injustice", "Abuse of power"]
+            },
+            // Pentacles
+            "As de Oros": {
+                upright: ["Opportunity", "Prosperity", "New venture", "Manifestation", "Abundance"],
+                reversed: ["Lost opportunity", "Lack of planning", "Limited resources", "Scarcity", "Deficiency"]
+            },
+            "2 de Oros": {
+                upright: ["Balance", "Priorities", "Adaptability", "Time management", "Flexibility"],
+                reversed: ["Disorganization", "Financial priorities", "Overwhelmed", "Loss of balance", "Overload"]
+            },
+            "3 de Oros": {
+                upright: ["Teamwork", "Collaboration", "Learning", "Implementation", "Effort"],
+                reversed: ["Lack of teamwork", "Disorganization", "Group conflict", "Competition", "Lack of growth"]
+            },
+            "4 de Oros": {
+                upright: ["Conservation", "Frugality", "Security", "Control", "Stability"],
+                reversed: ["Greed", "Materialism", "Self-protection", "Possessiveness", "Financial control"]
+            },
+            "5 de Oros": {
+                upright: ["Need", "Poverty", "Insecurity", "Worry", "Isolation"],
+                reversed: ["Recovery", "Charity", "Improvement", "Employment", "Overcoming"]
+            },
+            "6 de Oros": {
+                upright: ["Generosity", "Charity", "Sharing", "Justice", "Prosperity"],
+                reversed: ["Selfishness", "Debt", "Strings attached", "Inequality", "Extortion"]
+            },
+            "7 de Oros": {
+                upright: ["Patience", "Perseverance", "Reward", "Investment", "Growth"],
+                reversed: ["Lack of reward", "Impatience", "Lack of growth", "Frustration", "Bad investments"]
+            },
+            "8 de Oros": {
+                upright: ["Mastery", "Skill", "Craftsmanship", "Quality", "Perfectionism"],
+                reversed: ["Lack of focus", "Laziness", "Mediocre work", "Ambition without skill", "Vanity"]
+            },
+            "9 de Oros": {
+                upright: ["Abundance", "Luxury", "Self-sufficiency", "Financial discipline", "Achievements"],
+                reversed: ["Financial setback", "Living beyond means", "False appearances", "Lack of discipline", "Superficiality"]
+            },
+            "10 de Oros": {
+                upright: ["Wealth", "Inheritance", "Family", "Establishment", "Legacy"],
+                reversed: ["Financial loss", "Lack of stability", "Lack of resources", "Family dispute", "Bankruptcy"]
+            },
+            "Paje de Oros": {
+                upright: ["Financial opportunity", "Skill development", "Ambition", "New job", "Manifestation"],
+                reversed: ["Lack of progress", "Procrastination", "Learning from mistakes", "Bad news", "Lack of commitment"]
+            },
+            "Caballero de Oros": {
+                upright: ["Efficiency", "Hard work", "Responsibility", "Conservatism", "Methodical"],
+                reversed: ["Workaholic", "Boredom", "Feeling stuck", "Perfectionism", "Obsession"]
+            },
+            "Reina de Oros": {
+                upright: ["Practicality", "Creature comforts", "Financial security", "Hard work", "Motherhood"],
+                reversed: ["Self-centered", "Jealous", "Smothering", "Financially insecure", "Materialistic"]
+            },
+            "Rey de Oros": {
+                upright: ["Abundance", "Prosperity", "Security", "Leadership", "Success"],
+                reversed: ["Greed", "Indulgence", "Sensuality", "Obsessive materialism", "Stubbornness"]
+            }
+        };
+        
+        const allCards = Object.keys(cardMeanings);
+        
+        let currentLevel = 0;
+        let currentCards = [];
+        let selectionPath = [];
+        let fixedOrder = [];
+        let cardOrientations = {};
+        let revealedCards = new Set();
+        let initialized = false;
+        
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+        
+        function assignOrientations(cards) {
+            const orientations = {};
+            cards.forEach(card => {
+                orientations[card] = Math.random() < 0.5 ? '↑' : '↓';
+            });
+            return orientations;
+        }
+        
+        function initializeSelection() {
+            if (!initialized) {
+                fixedOrder = shuffle(allCards);
+                cardOrientations = assignOrientations(allCards);
+                initialized = true;
+            }
+            currentCards = [...fixedOrder];
+            currentLevel = 0;
+            selectionPath = [];
+            showGroups();
+            updateDebugPanel();
+        }
+        
+        function randomizeCards() {
+            fixedOrder = shuffle(allCards);
+            cardOrientations = assignOrientations(allCards);
+            revealedCards.clear();
+            currentCards = [...fixedOrder];
+            currentLevel = 0;
+            selectionPath = [];
+            showGroups();
+            updateDebugPanel();
+        }
+        
+        function showGroups() {
+            const selectionArea = document.getElementById('selectionArea');
+            const header = document.getElementById('header');
+            selectionArea.innerHTML = '';
+            
+            // Desktop mode shows all cards
+            if (currentMode === 'desktop') {
+                header.textContent = uiTranslations[currentLanguage].header.desktop;
+                document.getElementById('backButton').style.display = 'none';
+                
+                // Add desktop mode class
+                document.querySelector('.main-container').classList.add('desktop-mode');
+                
+                allCards.forEach((card, index) => {
+                    const cardElement = createDesktopCard(card, index);
+                    selectionArea.appendChild(cardElement);
+                });
+                return;
+            }
+            
+            // Remove desktop mode class for mobile mode
+            document.querySelector('.main-container').classList.remove('desktop-mode');
+            
+            if (currentLevel === 0) {
+                // Primer nivel: dividir en 4 grupos
+                header.textContent = uiTranslations[currentLanguage].header.level1;
+                const groupSize = Math.ceil(currentCards.length / 4);
+                
+                for (let i = 0; i < 4; i++) {
+                    const start = i * groupSize;
+                    const end = Math.min(start + groupSize, currentCards.length);
+                    const groupCards = currentCards.slice(start, end);
+                    
+                    if (groupCards.length > 0) {
+                        const groupName = `${uiTranslations[currentLanguage].group} ${i + 1}`;
+                        const groupCard = createGroupCard(groupName, groupCards, 'group-card', start);
+                        selectionArea.appendChild(groupCard);
+                    }
+                }
+                document.getElementById('backButton').style.display = 'none';
+            } else if (currentLevel === 1) {
+                // Segundo nivel: dividir en 3 subgrupos
+                header.textContent = uiTranslations[currentLanguage].header.level2;
+                const groupSize = Math.ceil(currentCards.length / 3);
+                
+                for (let i = 0; i < 3; i++) {
+                    const start = i * groupSize;
+                    const end = Math.min(start + groupSize, currentCards.length);
+                    const groupCards = currentCards.slice(start, end);
+                    
+                    if (groupCards.length > 0) {
+                        const groupName = `${uiTranslations[currentLanguage].subgroup} ${i + 1}`;
+                        const groupCard = createGroupCard(groupName, groupCards, 'subgroup-card', start);
+                        selectionArea.appendChild(groupCard);
+                    }
+                }
+                document.getElementById('backButton').style.display = 'block';
+            } else {
+                // Nivel final: mostrar cartas individuales
+                header.textContent = uiTranslations[currentLanguage].header.final;
+                currentCards.forEach((card, index) => {
+                    const cardElement = createFinalCard(card, index);
+                    selectionArea.appendChild(cardElement);
+                });
+                document.getElementById('backButton').style.display = 'block';
+            }
+        }
+        
+        function createGroupCard(title, cards, className, startIndex) {
+            const div = document.createElement('div');
+            div.className = `group-card ${className}`;
+            div.innerHTML = `
+                <div>${title}</div>
+                <div class="card-count">${cards.length} ${uiTranslations[currentLanguage].cards}</div>
+            `;
+            div.onclick = () => selectGroup(cards, startIndex);
+            return div;
+        }
+        
+        function createFinalCard(cardName, index) {
+            const div = document.createElement('div');
+            div.className = 'group-card final-card';
+            
+            if (revealedCards.has(cardName)) {
+                div.classList.add('revealed');
+                const displayName = currentLanguage === 'en' && cardTranslations[cardName] ? 
+                    cardTranslations[cardName] : cardName;
+                const orientation = cardOrientations[cardName];
+                
+                div.innerHTML = `
+                    <div class="card-content">
+                        <div class="card-name">${displayName}</div>
+                        <div class="card-orientation">${orientation}</div>
+                    </div>
+                `;
+            } else {
+                div.textContent = '✦';
+            }
+            
+            div.onclick = () => selectCard(cardName, index);
+            return div;
+        }
+        
+        function createDesktopCard(cardName, index) {
+            const div = document.createElement('div');
+            div.className = 'group-card final-card';
+            
+            if (revealedCards.has(cardName)) {
+                div.classList.add('revealed');
+                const displayName = currentLanguage === 'en' && cardTranslations[cardName] ? 
+                    cardTranslations[cardName] : cardName;
+                const orientation = cardOrientations[cardName];
+                
+                div.innerHTML = `
+                    <div class="card-content">
+                        <div class="card-name">${displayName}</div>
+                        <div class="card-orientation">${orientation}</div>
+                    </div>
+                `;
+            } else {
+                div.textContent = '✦';
+            }
+            
+            div.onclick = () => selectCard(cardName, index);
+            return div;
+        }
+        
+        function selectGroup(cards, startIndex) {
+            selectionPath.push({level: currentLevel, cards: currentCards, startIndex: startIndex});
+            currentCards = cards;
+            currentLevel++;
+            
+            if (currentCards.length <= 6) {
+                currentLevel = 2; // Ir directo a las cartas finales
+            }
+            
+            showGroups();
+        }
+        
+        function selectCard(cardName, localIndex) {
+            // Mark the card as revealed
+            revealedCards.add(cardName);
+            
+            // Calcular la posición absoluta en la lista original
+            let absolutePosition = localIndex;
+            
+            // Recorrer el path para calcular la posición absoluta
+            if (selectionPath.length > 0) {
+                const firstLevel = selectionPath[0];
+                if (firstLevel.startIndex !== undefined) {
+                    absolutePosition += firstLevel.startIndex;
+                }
+            }
+            
+            // Encontrar la posición real en fixedOrder
+            const realPosition = fixedOrder.indexOf(cardName) + 1;
+            const orientation = cardOrientations[cardName];
+            const isReversed = orientation === '↓';
+            
+            // Get the display name based on language
+            const displayName = currentLanguage === 'en' && cardTranslations[cardName] ? 
+                cardTranslations[cardName] : cardName;
+            
+            // Actualizar el nombre con el indicador de orientación
+            const nameElement = document.getElementById('selectedCardName');
+            nameElement.innerHTML = `${displayName} <span class="orientation-indicator">${orientation}</span>`;
+            
+            // Mostrar posición
+            const positionText = `${uiTranslations[currentLanguage].position} #${realPosition} ${uiTranslations[currentLanguage].inDeck}`;
+            document.getElementById('selectedPosition').textContent = positionText;
+            
+            // Mostrar significados
+            const meanings = currentLanguage === 'en' ? cardMeaningsEn[cardName] : cardMeanings[cardName];
+            const keywords = isReversed ? meanings.reversed : meanings.upright;
+            const keywordsHtml = keywords.map(keyword => 
+                `<span class="keyword">${keyword}</span>`
+            ).join('');
+            
+            document.getElementById('cardKeywords').innerHTML = keywordsHtml;
+            
+            // Update close button text
+            document.querySelector('.close-button').textContent = uiTranslations[currentLanguage].close;
+            
+            // Añadir clase si está invertida
+            const selectedCard = document.getElementById('selectedCard');
+            if (isReversed) {
+                selectedCard.classList.add('reversed');
+            } else {
+                selectedCard.classList.remove('reversed');
+            }
+            
+            selectedCard.classList.add('show');
+        }
+        
+        function goBack() {
+            if (selectionPath.length > 0) {
+                const previous = selectionPath.pop();
+                currentLevel = previous.level;
+                currentCards = previous.cards;
+                showGroups();
+            }
+        }
+        
+        function closeSelection() {
+            document.getElementById('selectedCard').classList.remove('show');
+            // Refresh the view to show the revealed card
+            showGroups();
+        }
+        
+        function toggleSettings() {
+            const settingsPanel = document.getElementById('settingsPanel');
+            settingsPanel.classList.toggle('show');
+        }
+        
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update language buttons
+            document.getElementById('langEs').classList.toggle('active', lang === 'es');
+            document.getElementById('langEn').classList.toggle('active', lang === 'en');
+            
+            // Update UI texts
+            updateUITexts();
+            
+            // Refresh current view
+            showGroups();
+        }
+        
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update mode buttons
+            document.getElementById('modeMobile').classList.toggle('active', mode === 'mobile');
+            document.getElementById('modeDesktop').classList.toggle('active', mode === 'desktop');
+            
+            // Reset to initial state and refresh
+            currentLevel = 0;
+            currentCards = [...fixedOrder];
+            selectionPath = [];
+            showGroups();
+        }
+        
+        function updateUITexts() {
+            const ui = uiTranslations[currentLanguage];
+            
+            // Settings panel
+            document.getElementById('settingsTitle').textContent = ui.settings;
+            document.getElementById('languageLabel').textContent = ui.language;
+            document.getElementById('modeLabel').textContent = ui.mode;
+            document.getElementById('langEs').textContent = 'Español';
+            document.getElementById('langEn').textContent = 'English';
+            document.getElementById('modeMobile').textContent = ui.mobile;
+            document.getElementById('modeDesktop').textContent = ui.desktop;
+            
+            // Header
+            const header = document.getElementById('header');
+            if (currentMode === 'desktop') {
+                header.textContent = ui.header.desktop;
+            } else if (currentLevel === 0) {
+                header.textContent = ui.header.initial;
+            }
+            
+            // Debug panel title if visible
+            const debugPanel = document.getElementById('debugPanel');
+            if (debugPanel.classList.contains('show')) {
+                updateDebugPanel();
+            }
+        }
+        
+        function toggleDebug() {
+            const debugPanel = document.getElementById('debugPanel');
+            debugPanel.classList.toggle('show');
+            updateDebugPanel();
+        }
+        
+        function updateDebugPanel() {
+            const debugPanel = document.getElementById('debugPanel');
+            const ui = uiTranslations[currentLanguage];
+            let html = `<h3>${ui.fixedOrder}</h3>`;
+            
+            // Mostrar las cartas en grupos de 4 (para el primer nivel)
+            const groupSize = Math.ceil(fixedOrder.length / 4);
+            
+            for (let i = 0; i < 4; i++) {
+                const start = i * groupSize;
+                const end = Math.min(start + groupSize, fixedOrder.length);
+                
+                html += `<div class="debug-group"><strong>${ui.group} ${i + 1} (${ui.cardsRange} ${start + 1}-${end}):</strong>`;
+                
+                for (let j = start; j < end; j++) {
+                    const card = fixedOrder[j];
+                    const displayName = currentLanguage === 'en' && cardTranslations[card] ? 
+                        cardTranslations[card] : card;
+                    const orientation = cardOrientations[card];
+                    html += `<div class="debug-card">${j + 1}. ${displayName} ${orientation}</div>`;
+                }
+                
+                html += '</div>';
+            }
+            
+            debugPanel.innerHTML = html;
+        }
+        
+        // Prevenir zoom en doble tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Inicializar
+        initializeSelection();
+        updateUITexts();
+    </script>
+</body>
+</html>

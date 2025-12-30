@@ -1,0 +1,1200 @@
+/* Form styles */
+
+:root {
+    --form-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --form-transition-duration: 0.3s;
+    --gold-accent: #d4af37;
+    --form-backdrop: rgba(0, 0, 0, 0.85);
+    --form-text: rgba(255, 255, 255, 0.9);
+    --form-border: rgba(255, 255, 255, 0.2);
+    --form-focus: rgba(212, 175, 55, 0.5);
+    --subtle-gold: #d4af37;
+}
+
+/* === FORM CONTAINER === */
+.sacred-form-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, rgba(11, 0, 27, 0.95) 0%, rgba(11, 0, 27, 0.98) 100%);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.sacred-form-container.form-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sacred-form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/flower-background.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    z-index: -1;
+    animation: flowerPulse 4s infinite ease-in-out;
+}
+
+@keyframes flowerPulse {
+    0% {
+        opacity: 0.05;
+    }
+    50% {
+        opacity: 0.15;
+    }
+    100% {
+        opacity: 0.05;
+    }
+}
+
+/* === FORM === */
+.sacred-form {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    background: linear-gradient(180deg, rgba(26, 27, 47, 0.8) 0%, rgba(11, 0, 27, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow-y: auto;
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+}
+
+.sacred-form.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.sacred-form.form-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    animation: formGlow 3s infinite;
+}
+
+@keyframes formGlow {
+    0% {
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* === FORM HEADER === */
+.form-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(11, 0, 27, 0.8);
+}
+
+.form-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+}
+
+
+.form-header h2 {
+    color: var(--luna-starlight);
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+}
+
+.sacred-form.form-active .form-header h2 {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* === FORM CONTROLS === */
+.close-form-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+.sacred-form.form-active .close-form-btn {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+.close-form-btn:hover {
+    color: #ddd;
+    transform: rotate(90deg);
+}
+
+/* === FORM IFRAME WRAPPER === */
+.form-iframe-wrapper {
+    flex: 1;
+    position: relative;
+    overflow: auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease 0.3s;
+}
+
+.sacred-form.form-active .form-iframe-wrapper {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-iframe-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: white;
+}
+
+/* === INPUT BUILDER === */
+.input-builder {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 2px;
+    height: 0;
+    background: var(--subtle-gold);
+    opacity: 0;
+}
+
+.sacred-form.active .form-group:nth-child(1) .input-builder {
+    animation: buildElement 0.8s forwards 1s;
+}
+
+.sacred-form.active .form-group:nth-child(2) .input-builder {
+    animation: buildElement 0.8s forwards 1.4s;
+}
+
+.sacred-form.active .form-group:nth-child(3) .input-builder {
+    animation: buildElement 0.8s forwards 1.8s;
+}
+
+/* === BUTTON BUILDER === */
+.button-builder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--subtle-gold);
+    border-radius: 30px;
+    transform: scale(0);
+    opacity: 0;
+}
+
+.sacred-form.active .button-builder {
+    animation: buildButton 0.8s forwards 2.2s;
+}
+
+/* === BUTTON WRAPPER === */
+.button-wrapper {
+    position: relative;
+    margin-top: 2rem;
+}
+
+/* === TYPING MESSAGES === */
+.typing-messages {
+    position: relative;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    min-height: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 100;
+    font-size: 1.5rem;
+    color: var(--subtle-gold);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    opacity: 0;
+    margin: 0.5rem 0;
+    animation: fadeIn 1s forwards 3s;
+}
+
+.typing-text {
+    display: inline;
+    position: relative;
+    letter-spacing: 2px;
+    opacity: 1;
+    font-weight: 300;
+}
+
+.cursor {
+    display: inline-block;
+    width: 2px;
+    margin-left: 0;
+    animation: blink 1s step-end infinite;
+    color: var(--subtle-gold);
+    opacity: 1;
+}
+
+/* === RESPONSIVE STYLES === */
+@media (max-width: 768px) {
+    .typing-text {
+        font-weight: 400;
+        font-size: 1.1rem;
+        letter-spacing: 1.5px;
+    }
+
+    .typing-messages {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    .cursor {
+        width: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .typing-text {
+        font-weight: 500;
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+}
+
+/* === ANIMATION SYSTEM === */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInLetters {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes pulsate {
+    0% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+}
+
+@keyframes drawBorder {
+    0% {
+        clip-path: inset(0 100% 0 0);
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes portalOpen {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    40% {
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(50);
+        opacity: 0;
+    }
+}
+
+@keyframes formAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes form-effect {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes buildElement {
+    0% {
+        height: 0;
+        opacity: 0;
+    }
+    50% {
+        height: 100%;
+        opacity: 1;
+    }
+    100% {
+        height: 100%;
+        opacity: 0;
+        transform: translateX(10px);
+    }
+}
+
+@keyframes buildButton {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.8; }
+    100% { opacity: 0; }
+}
+
+@keyframes backgroundFlow {
+    0% {
+        background: rgb(11, 0, 27);  /* Deep Purple */
+    }
+    20% {
+        background: rgb(27, 0, 11);  /* Deep Crimson */
+    }
+    40% {
+        background: rgb(27, 11, 0);  /* Deep Auburn */
+    }
+    60% {
+        background: rgb(11, 27, 0);  /* Deep Forest */
+    }
+    80% {
+        background: rgb(0, 27, 11);  /* Deep Emerald */
+    }
+    100% {
+        background: rgb(11, 0, 27);  /* Back to Deep Purple */
+    }
+}
+
+/* === NEW FORM STYLES === */
+.sacred-form-content {
+    padding: 2rem;
+    color: var(--luna-starlight);
+    position: relative;
+    z-index: 2;
+}
+
+.form-section {
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: sectionAppear 0.5s var(--form-easing) forwards;
+}
+
+.form-section h3 {
+    color: var(--luna-starlight);
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: var(--luna-starlight);
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--luna-starlight);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--luna-ethereal-blue);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.submit-btn {
+    background: transparent;
+    border: 1px solid var(--luna-gold);
+    color: var(--luna-gold);
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn:hover {
+    background: var(--luna-gold);
+    color: var(--luna-deep-space);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.submit-btn:hover::before {
+    transform: translateX(100%);
+}
+
+/* Particles and connections */
+.particles-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    background: var(--luna-ethereal-blue);
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    opacity: 0.8;
+    filter: blur(1px);
+    box-shadow: 0 0 8px var(--luna-ethereal-blue);
+}
+
+.particle-line {
+    position: absolute;
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.05));
+    height: 1px;
+    transform-origin: left center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Star background */
+.starry-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, 
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 100%);
+    opacity: 0.5;
+}
+
+/* Luna's Theme */
+:root {
+    --luna-deep-space: rgb(11, 0, 27);
+    --luna-cosmic-blue: #1a1b2f;
+    --luna-ethereal-blue: #ffffff;
+    --luna-starlight: #f7f7ff;
+    --luna-gold: #d4af37;
+    --form-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --form-transition-duration: 0.3s;
+    --form-backdrop: rgba(11, 0, 27, 0.95);
+    --form-text: rgba(255, 255, 255, 0.9);
+    --form-border: rgba(212, 175, 55, 0.3);
+    --form-focus: rgba(212, 175, 55, 0.5);
+}
+
+/* Luna's Introduction */
+.luna-intro {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+}
+
+.luna-image-container {
+    text-align: center;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    overflow: visible;
+}
+
+.luna-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.luna-constellation {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: 1;
+}
+
+.luna-essence {
+    text-align: left;
+    margin: 2rem 0;
+    padding: 0 1rem;
+}
+
+.luna-declaration,
+.luna-revelation,
+.luna-purpose {
+    text-align: left;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.luna-declaration { animation-delay: 0.2s; }
+.luna-revelation { animation-delay: 0.4s; }
+.luna-purpose { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sacred-purpose,
+.sacred-process {
+    text-align: left;
+    margin: 3rem 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid rgba(173, 216, 230, 0.1);
+    box-shadow: 0 0 30px rgba(173, 216, 230, 0.05);
+    transform: translateY(20px);
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.sacred-purpose { animation-delay: 0.8s; }
+.sacred-process { animation-delay: 1s; }
+
+.purpose-title,
+.process-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: rgba(173, 216, 230, 0.9);
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 15px rgba(173, 216, 230, 0.3);
+}
+
+.purpose-explanation,
+.process-explanation {
+    text-align: left;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.purpose-list {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.purpose-list li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: fadeInLeft 0.6s ease-out forwards;
+}
+
+.purpose-list li:nth-child(1) { animation-delay: 1.2s; }
+.purpose-list li:nth-child(2) { animation-delay: 1.4s; }
+.purpose-list li:nth-child(3) { animation-delay: 1.6s; }
+.purpose-list li:nth-child(4) { animation-delay: 1.8s; }
+
+.purpose-list li:before {
+    content: '✧';
+    position: absolute;
+    left: 0;
+    color: rgba(173, 216, 230, 0.8);
+    animation: starGlow 2s infinite alternate;
+}
+
+@keyframes starGlow {
+    0% { text-shadow: 0 0 5px rgba(173, 216, 230, 0.4); }
+    100% { text-shadow: 0 0 10px rgba(173, 216, 230, 0.8); }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.sacred-invitation {
+    font-size: 1.3rem;
+    line-height: 1.8;
+    margin: 2rem 0;
+    color: rgba(173, 216, 230, 0.9);
+    text-shadow: 0 0 10px rgba(173, 216, 230, 0.2);
+    text-align: center;
+}
+
+.begin-journey {
+    font-size: 1.6rem;
+    margin: 2rem 0;
+    color: rgba(173, 216, 230, 0.9);
+    text-shadow: 0 0 15px rgba(173, 216, 230, 0.3);
+    text-align: center;
+}
+
+.luna-signature {
+    text-align: center;
+    font-style: italic;
+    color: rgba(173, 216, 230, 0.7);
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    animation: signatureGlow 3s infinite alternate;
+}
+
+@keyframes signatureGlow {
+    0% { text-shadow: 0 0 10px rgba(173, 216, 230, 0.2); }
+    100% { text-shadow: 0 0 20px rgba(173, 216, 230, 0.4); }
+}
+
+/* Keep existing styles */
+.luna-intro {
+    padding: 2rem;
+    text-align: center;
+    color: var(--luna-starlight);
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.luna-image-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    overflow: visible;
+}
+
+.luna-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.luna-constellation {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: 1;
+}
+
+/* Update existing form styles with Luna's theme */
+.sacred-form-container {
+    background: var(--form-backdrop);
+}
+
+.sacred-form {
+    background: var(--luna-cosmic-blue);
+    border: 1px solid var(--luna-gold);
+    color: var(--luna-starlight);
+}
+
+.form-header {
+    background: rgba(11, 0, 27, 0.8);
+    border-bottom: 1px solid var(--luna-gold);
+}
+
+.form-header h2 {
+    color: var(--luna-gold);
+}
+
+.form-section h3 {
+    color: var(--luna-gold);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    background: rgba(11, 0, 27, 0.3);
+    border: 1px solid var(--form-border);
+    color: var(--luna-starlight);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--luna-gold);
+    box-shadow: 0 0 10px var(--luna-ethereal-blue);
+}
+
+.submit-btn {
+    background: transparent;
+    border: 1px solid var(--luna-gold);
+    color: var(--luna-gold);
+}
+
+.submit-btn:hover {
+    background: var(--luna-gold);
+    color: var(--luna-deep-space);
+}
+
+/* Luna's Ethereal Form */
+:root {
+    --luna-ethereal-blue: rgba(173, 216, 230, 0.8);
+    --luna-deep-space: rgba(11, 0, 27, 0.98);
+    --luna-consciousness: rgba(255, 255, 255, 0.05);
+}
+
+.sacred-form {
+    background: linear-gradient(
+        135deg,
+        rgba(11, 0, 27, 0.7) 0%,
+        rgba(30, 15, 45, 0.7) 100%
+    );
+    border: 1px solid var(--luna-consciousness);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.05);
+    animation: formGlow 8s infinite alternate;
+}
+
+@keyframes formGlow {
+    0% { box-shadow: 0 0 50px rgba(255, 255, 255, 0.05); }
+    50% { box-shadow: 0 0 70px rgba(173, 216, 230, 0.1); }
+    100% { box-shadow: 0 0 50px rgba(255, 255, 255, 0.05); }
+}
+
+.luna-image-container {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    overflow: visible;
+    animation: lunaFloat 6s ease-in-out infinite;
+}
+
+@keyframes lunaFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.luna-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+    box-shadow: 
+        0 0 30px rgba(255, 255, 255, 0.2),
+        0 0 60px rgba(173, 216, 230, 0.1);
+    animation: lunaGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes lunaGlow {
+    0% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.2), 0 0 60px rgba(173, 216, 230, 0.1); }
+    100% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(173, 216, 230, 0.2); }
+}
+
+/* Form input enhancements */
+.form-group input,
+.form-group textarea {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(173, 216, 230, 0.3);
+    box-shadow: 0 0 15px rgba(173, 216, 230, 0.1);
+}
+
+/* Ethereal Form Elements */
+.ethereal-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.ethereal-choice input[type="radio"] {
+    display: none;
+}
+
+.ethereal-choice label {
+    position: relative;
+    padding: 1rem 1.5rem 1rem 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ethereal-choice label:before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(173, 216, 230, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.ethereal-choice input[type="radio"]:checked + label {
+    border-color: rgba(173, 216, 230, 0.4);
+    background: rgba(173, 216, 230, 0.05);
+    box-shadow: 0 0 20px rgba(173, 216, 230, 0.1);
+}
+
+.ethereal-choice input[type="radio"]:checked + label:before {
+    background: rgba(173, 216, 230, 0.8);
+    box-shadow: 0 0 10px rgba(173, 216, 230, 0.4);
+}
+
+.ethereal-choice label:hover {
+    border-color: rgba(173, 216, 230, 0.3);
+    background: rgba(173, 216, 230, 0.03);
+}
+
+/* Ethereal Checkboxes */
+.ethereal-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.ethereal-checkbox {
+    position: relative;
+}
+
+.ethereal-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.ethereal-checkbox label {
+    position: relative;
+    padding: 1rem 1.5rem 1rem 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.ethereal-checkbox label:before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(173, 216, 230, 0.3);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.ethereal-checkbox input[type="checkbox"]:checked + label {
+    border-color: rgba(173, 216, 230, 0.4);
+    background: rgba(173, 216, 230, 0.05);
+    box-shadow: 0 0 20px rgba(173, 216, 230, 0.1);
+}
+
+.ethereal-checkbox input[type="checkbox"]:checked + label:before {
+    background: rgba(173, 216, 230, 0.8);
+    box-shadow: 0 0 10px rgba(173, 216, 230, 0.4);
+    content: '✓';
+    color: var(--luna-deep-space);
+    font-size: 12px;
+    text-align: center;
+    line-height: 18px;
+}
+
+.ethereal-checkbox label:hover {
+    border-color: rgba(173, 216, 230, 0.3);
+    background: rgba(173, 216, 230, 0.03);
+}
+
+/* Ethereal Textarea */
+.ethereal-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.ethereal-textarea:focus {
+    outline: none;
+    border-color: rgba(173, 216, 230, 0.4);
+    background: rgba(173, 216, 230, 0.05);
+    box-shadow: 0 0 20px rgba(173, 216, 230, 0.1);
+}
+
+/* Section Headers */
+.form-section h3 {
+    color: rgba(173, 216, 230, 0.9);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(173, 216, 230, 0.3);
+}
+
+.agreement-group h4 {
+    color: rgba(173, 216, 230, 0.8);
+    font-size: 1.2rem;
+    margin: 1.5rem 0 1rem;
+    text-shadow: 0 0 8px rgba(173, 216, 230, 0.2);
+}
+
+.greeting-section {
+    text-align: left;
+    margin: 2rem 0;
+    padding: 0 2rem;
+}
+
+.dear-seeker {
+    font-size: 2.8rem;
+    color: rgba(173, 216, 230, 0.9);
+    margin: 0;
+    text-shadow: 0 0 20px rgba(173, 216, 230, 0.4);
+    animation: fadeInLeft 1s ease-out;
+}
+
+.distinction-section {
+    margin: 2rem 0;
+    text-align: left;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid rgba(173, 216, 230, 0.1);
+}
+
+.distinction-intro {
+    font-size: 1.2rem;
+    color: rgba(173, 216, 230, 0.9);
+    margin-bottom: 1rem;
+}
+
+.distinction-points {
+    margin-left: 2rem;
+}
+
+.ai-point, .ei-point {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.ai-point:before, .ei-point:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: rgba(173, 216, 230, 0.8);
+}
+
+.offer-list, .doubt-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 1.5rem 2rem;
+    text-align: left;
+}
+
+.offer-list li, .doubt-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: fadeInLeft 0.6s ease-out forwards;
+}
+
+.offer-list li:before, .doubt-list li:before {
+    content: '✧';
+    position: absolute;
+    left: 0;
+    color: rgba(173, 216, 230, 0.8);
+    animation: starGlow 2s infinite alternate;
+}
+
+.doubt-section {
+    text-align: left;
+    margin: 3rem 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid rgba(173, 216, 230, 0.1);
+}
+
+.doubt-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: rgba(173, 216, 230, 0.9);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 15px rgba(173, 216, 230, 0.3);
+}
+
+.doubt-intro {
+    text-align: left;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.invitation-section {
+    margin: 4rem 0 2rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid rgba(173, 216, 230, 0.1);
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(173, 216, 230, 0.05);
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-image {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .main-image:hover {
+            transform: scale(1.05);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 300;
+        }
+
+        .audio-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .audio-container:hover {
+            transform: translateY(-5px);
+        }
+
+        audio {
+            margin: 0 auto;
+            display: block;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-volume-slider,
+        audio::-webkit-media-controls-mute-button {
+            filter: grayscale(1);
+        }
+
+        .download-btn {
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+            line-height: 1;
+            padding: 0.5rem;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.2);
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const image = document.querySelector('.main-image');
+            const audio = document.querySelector('audio');
+            
+            image.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <img src="An inspiring image of a transparent planet with a fetus inside, symbolizing birth, and a tree on top of the planet giving life.webp" alt="Planet with fetus and tree of life" class="main-image">
+    <h1>SI</h1>
+    <div class="audio-container">
+        <audio controls loop>
+            <source src="SI.acc" type="audio/aac">
+            Your browser does not support the audio element.
+        </audio>
+        <a href="SI.acc" download class="download-btn" title="Download audio">⬇️</a>
+    </div>
+</body>
+</html>

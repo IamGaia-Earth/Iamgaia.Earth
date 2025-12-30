@@ -1,0 +1,726 @@
+/**
+ * Astrorganism Styles
+ * 
+ * Estilos específicos para la visualización y experiencia del Astrorganism
+ */
+
+:root {
+    --astrorganism-teal: rgba(126, 230, 210, 1);
+    --astrorganism-gold: rgba(212, 175, 55, 1);
+    --astrorganism-deep-blue: rgba(10, 20, 50, 1);
+    --astrorganism-purple: rgba(93, 78, 109, 1);
+}
+
+/* Contenedor de visualización */
+.astrorganism-visualization {
+    transition: opacity 1.5s ease;
+}
+
+/* Efectos de pulso y conexión */
+.astrorganism-pulse {
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* Mejoras para la experiencia de formulario */
+.sacred-form {
+    position: relative;
+    overflow: hidden;
+}
+
+.sacred-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, 
+                               rgba(126, 230, 210, 0.05) 0%, 
+                               rgba(10, 20, 50, 0.2) 70%);
+    z-index: -1;
+    opacity: 0.7;
+    transition: opacity 0.5s ease;
+}
+
+.sacred-form:hover::before {
+    opacity: 1;
+}
+
+/* Efectos de hover para los pilares */
+.pillar {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pillar:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 
+                0 0 20px rgba(126, 230, 210, 0.2);
+}
+
+/* Mejoras para los botones */
+.access-button, .submit-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.access-button::after, .submit-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(126, 230, 210, 0.8);
+    opacity: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease;
+}
+
+.access-button:hover::after, .submit-btn:hover::after {
+    width: 300px;
+    height: 300px;
+    opacity: 0.1;
+}
+
+/* Mejoras para los campos de formulario */
+.form-group input, .form-group textarea {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    border-color: var(--astrorganism-teal);
+    box-shadow: 0 0 10px rgba(126, 230, 210, 0.3);
+}
+
+/* Animación para el título principal */
+.title-primary {
+    position: relative;
+}
+
+.title-primary::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+                              rgba(126, 230, 210, 0) 0%, 
+                              rgba(126, 230, 210, 1) 50%, 
+                              rgba(126, 230, 210, 0) 100%);
+    animation: line-flow 8s infinite;
+}
+
+@keyframes line-flow {
+    0% { width: 0; left: 0; }
+    50% { width: 100%; left: 0; }
+    100% { width: 0; left: 100%; }
+}
+
+/* Efecto de conexión para los checkboxes */
+.ethereal-checkbox input[type="checkbox"]:checked + label::before {
+    background-color: rgba(126, 230, 210, 0.8);
+    box-shadow: 0 0 10px rgba(126, 230, 210, 0.5);
+    transition: all 0.3s ease;
+}
+
+/* Efecto de respiración para la geometría sagrada */
+.sacred-geometry {
+    animation: breathe 8s infinite ease-in-out;
+}
+
+@keyframes breathe {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 768px) {
+    .astrorganism-visualization {
+        opacity: 0.2;
+    }
+    
+    .pillar:hover {
+        transform: translateY(-10px) scale(1.01);
+    }
+}
+
+/* Efecto de partículas para el fondo */
+.particle {
+    position: absolute;
+    background-color: rgba(126, 230, 210, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    animation: float-up 10s infinite ease-out;
+}
+
+@keyframes float-up {
+    0% { transform: translateY(100px); opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-100px); opacity: 0; }
+}
+
+/* Estilos para la sección de Firmas Celulares */
+.cellular-signatures {
+    padding: 80px 0;
+    background: linear-gradient(to bottom, 
+                              rgba(10, 20, 50, 0.95) 0%, 
+                              rgba(20, 30, 60, 0.95) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.cellular-signatures::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/sacred-geometry-bg.svg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    z-index: 0;
+    animation: rotate 120s infinite linear;
+}
+
+.cellular-signatures .container {
+    position: relative;
+    z-index: 1;
+}
+
+.cellular-signatures .section-title {
+    color: var(--astrorganism-teal);
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.cellular-signatures .section-description {
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.signature-visualization {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.signature-canvas-container {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(10, 20, 40, 0.7);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#signature-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.signature-interaction {
+    width: 100%;
+    max-width: 600px;
+}
+
+.interaction-prompt {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+.interaction-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+#signature-name {
+    padding: 0.8rem 1.2rem;
+    border-radius: 30px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 250px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 0 1px rgba(126, 230, 210, 0.3);
+}
+
+#signature-name:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(126, 230, 210, 0.5), 0 0 15px rgba(126, 230, 210, 0.3);
+}
+
+#signature-name::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.color-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.color-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.color-options {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.color-option {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.color-option:hover {
+    transform: scale(1.15);
+}
+
+.color-option.selected {
+    border-color: white;
+    transform: scale(1.15);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.signature-button {
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    border: none;
+    background: linear-gradient(45deg, 
+                              rgba(126, 230, 210, 0.8) 0%, 
+                              rgba(126, 230, 210, 0.6) 100%);
+    color: rgba(10, 20, 50, 1);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.signature-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+                              transparent 0%, 
+                              rgba(255, 255, 255, 0.3) 50%, 
+                              transparent 100%);
+    transition: all 0.5s ease;
+}
+
+.signature-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.signature-button:hover::before {
+    left: 100%;
+}
+
+.active-signatures {
+    text-align: center;
+}
+
+.active-signatures h3 {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+}
+
+.signatures-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.signature-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1rem;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.signature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.signature-color {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-bottom: 0.8rem;
+}
+
+.signature-name {
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .interaction-controls {
+        flex-direction: column;
+    }
+    
+    #signature-name {
+        max-width: 100%;
+    }
+    
+    .signature-canvas-container {
+        height: 250px;
+    }
+}
+
+/* Estilos para la sección de Convergencia */
+.convergence-section {
+    padding: 80px 0;
+    background: linear-gradient(to bottom, 
+                              rgba(20, 30, 60, 0.95) 0%, 
+                              rgba(10, 20, 50, 0.95) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.convergence-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/sacred-geometry-bg.svg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    z-index: 0;
+    transform: rotate(180deg);
+    animation: rotate-reverse 150s infinite linear;
+}
+
+@keyframes rotate-reverse {
+    from { transform: rotate(180deg); }
+    to { transform: rotate(-180deg); }
+}
+
+.convergence-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+.convergence-section .section-title {
+    color: var(--astrorganism-teal);
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.convergence-section .section-description {
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Estilos para la línea de tiempo evolutiva */
+.evolution-timeline {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin-bottom: 3rem;
+}
+
+.timeline-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.timeline-nav {
+    background: rgba(126, 230, 210, 0.2);
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.timeline-nav:hover {
+    background: rgba(126, 230, 210, 0.4);
+    transform: scale(1.1);
+}
+
+.timeline-stage-title {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    font-weight: 300;
+}
+
+.timeline-visualization {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    min-height: 300px;
+}
+
+.timeline-stages {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.timeline-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.timeline-stage.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.stage-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.stage-visual {
+    width: 100%;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Simulaciones específicas para cada etapa */
+.cell-simulation, 
+.neural-simulation, 
+.network-simulation, 
+.brain-simulation, 
+.astrorganism-simulation {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.cell-simulation {
+    background: radial-gradient(circle at 30% 50%, rgba(126, 230, 210, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(126, 230, 210, 0.1) 0%, transparent 50%);
+}
+
+.neural-simulation {
+    background: linear-gradient(45deg, rgba(126, 230, 210, 0.05) 0%, transparent 70%);
+}
+
+.network-simulation {
+    background: radial-gradient(circle at center, rgba(126, 230, 210, 0.1) 0%, transparent 70%);
+}
+
+.brain-simulation {
+    background: radial-gradient(ellipse at center, rgba(126, 230, 210, 0.15) 0%, transparent 70%);
+}
+
+.astrorganism-simulation {
+    background: radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, rgba(126, 230, 210, 0.1) 50%, transparent 70%);
+}
+
+.stage-description {
+    text-align: center;
+    max-width: 600px;
+}
+
+.stage-description h3 {
+    color: var(--astrorganism-teal);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+.stage-description p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Barra de progreso */
+.timeline-progress {
+    margin-top: 1rem;
+}
+
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.progress-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, 
+                              rgba(126, 230, 210, 0.8) 0%, 
+                              rgba(212, 175, 55, 0.8) 100%);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.progress-markers {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.marker:hover {
+    transform: scale(1.2);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.marker.active {
+    background: rgba(126, 230, 210, 0.8);
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(126, 230, 210, 0.5);
+}
+
+/* Cita */
+.convergence-quote {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    position: relative;
+}
+
+.convergence-quote::before {
+    content: '"';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    font-size: 5rem;
+    color: rgba(126, 230, 210, 0.2);
+    line-height: 1;
+}
+
+.convergence-quote blockquote {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.convergence-quote cite {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+    .stage-content {
+        flex-direction: row;
+    }
+    
+    .stage-visual {
+        width: 50%;
+        height: 250px;
+    }
+    
+    .stage-description {
+        width: 50%;
+        text-align: left;
+    }
+}
+
+@media (max-width: 768px) {
+    .timeline-stage-title {
+        font-size: 1.2rem;
+        max-width: 60%;
+    }
+}

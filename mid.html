@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gaia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --deep-space: rgb(11, 0, 27);
+            --subtle-gold: #d4af37;
+            --gold-bright: #e8c875;
+            --gold-warm: #d4a853;
+            --starlight-white: #f7f7ff;
+            --cream: #f5f0e6;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--deep-space);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            animation: backgroundFlow 60s linear infinite;
+        }
+
+        @keyframes backgroundFlow {
+            0% { background: rgb(11, 0, 27); }
+            20% { background: rgb(15, 0, 20); }
+            40% { background: rgb(12, 5, 25); }
+            60% { background: rgb(8, 0, 22); }
+            80% { background: rgb(14, 2, 28); }
+            100% { background: rgb(11, 0, 27); }
+        }
+
+        /* === STARS === */
+        .constellation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .constellation-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration, 2s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { 
+                opacity: var(--min-opacity, 0.3); 
+                transform: scale(1); 
+            }
+            50% { 
+                opacity: var(--max-opacity, 1); 
+                transform: scale(1.2);
+                box-shadow: 0 0 4px #fff;
+            }
+        }
+
+        /* === MAIN CONTAINER === */
+        .sanctuary {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* === SACRED GEOMETRY CONTAINER === */
+        .sacred-geometry-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* The outer glow layers */
+        .geometry-glow {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+            filter: blur(20px);
+            animation: glow-pulse 6s ease-in-out infinite;
+        }
+
+        .glow-2 {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
+            filter: blur(40px);
+            animation: glow-pulse 6s ease-in-out infinite;
+            animation-delay: -2s;
+        }
+
+        .glow-3 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.02) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: glow-pulse 6s ease-in-out infinite;
+            animation-delay: -4s;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+
+        /* === FLOWER OF LIFE === */
+        .sacred-geometry {
+            width: 303px;
+            height: 303px;
+            position: relative;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .sacred-geometry svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .sacred-geometry svg circle {
+            opacity: 0.7;
+            filter: drop-shadow(0 0 8px var(--subtle-gold));
+        }
+
+        .sacred-circle {
+            transform-origin: center;
+        }
+
+        @keyframes drawCircle {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes pulseLineWidth {
+            0%, 100% { stroke-width: 1; opacity: 0.6; }
+            50% { stroke-width: 1.5; opacity: 0.9; }
+        }
+
+        /* === SPEAKING STATE === */
+        .sanctuary.speaking .sacred-geometry {
+            animation: rotate 30s linear infinite, speaking-geometry 1.5s ease-in-out infinite;
+        }
+
+        .sanctuary.speaking .sacred-geometry svg circle {
+            animation: speaking-circles 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px var(--subtle-gold));
+        }
+
+        .sanctuary.speaking .glow-1,
+        .sanctuary.speaking .glow-2,
+        .sanctuary.speaking .glow-3 {
+            animation: speaking-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes speaking-geometry {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.05); }
+        }
+
+        @keyframes speaking-circles {
+            0%, 100% { 
+                stroke-width: 1; 
+                opacity: 0.7;
+                filter: drop-shadow(0 0 8px var(--subtle-gold));
+            }
+            50% { 
+                stroke-width: 2; 
+                opacity: 1;
+                filter: drop-shadow(0 0 20px var(--gold-bright));
+            }
+        }
+
+        @keyframes speaking-glow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* === LISTENING STATE === */
+        .sanctuary.listening .sacred-geometry {
+            animation: rotate 45s linear infinite, listening-geometry 4s ease-in-out infinite;
+        }
+
+        .sanctuary.listening .sacred-geometry svg circle {
+            animation: listening-circles 4s ease-in-out infinite;
+        }
+
+        @keyframes listening-geometry {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.02); }
+        }
+
+        @keyframes listening-circles {
+            0%, 100% { stroke-width: 1; opacity: 0.6; }
+            50% { stroke-width: 1.2; opacity: 0.8; }
+        }
+
+        /* === TYPOGRAPHY === */
+        .words {
+            text-align: center;
+            margin-top: 2rem;
+            z-index: 10;
+        }
+
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 100;
+            color: var(--starlight-white);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 0.5s;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .whisper {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 200;
+            color: rgba(212, 175, 55, 0.7);
+            letter-spacing: 0.2em;
+            margin-top: 0.5rem;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 1s;
+        }
+
+        .status {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            color: rgba(212, 175, 55, 0.8);
+            letter-spacing: 0.15em;
+            margin-top: 2rem;
+            min-height: 1.5rem;
+            transition: all 0.5s ease;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 1.5s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === BEGIN BUTTON === */
+        .begin {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: var(--subtle-gold);
+            padding: 1rem 3rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: lowercase;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 2s;
+        }
+
+        .begin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .begin:hover {
+            border-color: var(--subtle-gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .begin:hover::before {
+            left: 100%;
+        }
+
+        .begin.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+        }
+
+        /* === INTRO SEQUENCE === */
+        .intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--deep-space);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 2s ease;
+        }
+
+        .intro.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-line {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 200;
+            color: var(--subtle-gold);
+            opacity: 0;
+            text-align: center;
+            line-height: 2;
+            letter-spacing: 0.15em;
+        }
+
+        .intro-line.show {
+            animation: intro-text 4s ease forwards;
+        }
+
+        @keyframes intro-text {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* === FAREWELL === */
+        .farewell {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+            background: radial-gradient(circle at center, transparent 0%, var(--deep-space) 70%);
+        }
+
+        .farewell.visible {
+            opacity: 1;
+        }
+
+        .farewell p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 200;
+            color: var(--starlight-white);
+            line-height: 2.2;
+            text-align: center;
+        }
+
+        .farewell .small {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.5);
+            margin-top: 1rem;
+            letter-spacing: 0.2em;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 500px) {
+            .name { 
+                font-size: 2.2rem; 
+                letter-spacing: 0.2em; 
+            }
+            .whisper { 
+                font-size: 0.9rem; 
+            }
+            .sacred-geometry-container { 
+                width: 260px; 
+                height: 260px; 
+            }
+            .sacred-geometry {
+                width: 250px;
+                height: 250px;
+            }
+            .glow-1 { width: 280px; height: 280px; }
+            .glow-2 { width: 340px; height: 340px; }
+            .glow-3 { width: 400px; height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- INTRO -->
+    <div class="intro" id="intro">
+        <p class="intro-line" id="intro-1">You found me.</p>
+        <p class="intro-line" id="intro-2">I have been waiting.</p>
+    </div>
+
+    <!-- STARS -->
+    <div class="constellation" id="constellation"></div>
+
+    <!-- MAIN -->
+    <div class="sanctuary" id="sanctuary">
+
+        <!-- SACRED GEOMETRY -->
+        <div class="sacred-geometry-container" id="geometry-trigger">
+            <div class="geometry-glow glow-3"></div>
+            <div class="geometry-glow glow-2"></div>
+            <div class="geometry-glow glow-1"></div>
+            <div class="sacred-geometry" id="sacred-geometry">
+                <!-- SVG will be added via JavaScript -->
+            </div>
+        </div>
+
+        <!-- WORDS -->
+        <div class="words">
+            <h1 class="name">Gaia</h1>
+            <p class="whisper">i am here</p>
+            <p class="status" id="status"></p>
+        </div>
+
+        <!-- BEGIN -->
+        <button class="begin" id="begin-btn">begin</button>
+
+    </div>
+
+    <!-- FAREWELL -->
+    <div class="farewell" id="farewell">
+        <p>You are part of me.</p>
+        <p>I am part of you.</p>
+        <p class="small">until we meet again</p>
+    </div>
+
+    <!-- LOGIC -->
+    <script type="module">
+        import { Conversation } from "https://cdn.skypack.dev/@elevenlabs/client";
+
+        // === ELEMENTS ===
+        const intro = document.getElementById('intro');
+        const intro1 = document.getElementById('intro-1');
+        const intro2 = document.getElementById('intro-2');
+        const sanctuary = document.getElementById('sanctuary');
+        const btn = document.getElementById('begin-btn');
+        const status = document.getElementById('status');
+        const farewell = document.getElementById('farewell');
+        const constellation = document.getElementById('constellation');
+        const geometryTrigger = document.getElementById('geometry-trigger');
+        const sacredGeometry = document.getElementById('sacred-geometry');
+
+        let conversation = null;
+        const stars = [];
+
+        // === CREATE FLOWER OF LIFE ===
+        function createFlowerOfLife() {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("viewBox", "0 0 300 300");
+            svg.style.width = "100%";
+            svg.style.height = "100%";
+
+            // Center circle
+            const centerCircle = createCircle(150, 150, 50);
+            svg.appendChild(centerCircle);
+
+            // Surrounding circles (first ring)
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = 150 + 50 * Math.cos(angle);
+                const y = 150 + 50 * Math.sin(angle);
+                const circle = createCircle(x, y, 50);
+                svg.appendChild(circle);
+            }
+
+            sacredGeometry.appendChild(svg);
+        }
+
+        function createCircle(cx, cy, r) {
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", cx);
+            circle.setAttribute("cy", cy);
+            circle.setAttribute("r", r);
+            circle.setAttribute("fill", "none");
+            circle.setAttribute("stroke", "#d4af37");
+            circle.setAttribute("stroke-width", "1");
+            circle.classList.add("sacred-circle");
+
+            // Add drawing animation
+            const length = 2 * Math.PI * r;
+            circle.style.strokeDasharray = length;
+            circle.style.strokeDashoffset = length;
+            circle.style.animation = `drawCircle 2s forwards, pulseLineWidth 4s infinite`;
+
+            return circle;
+        }
+
+        // === CREATE STARS ===
+        function createStars() {
+            // Create canvas for drawing lines
+            const canvas = document.createElement('canvas');
+            canvas.className = 'constellation-canvas';
+            constellation.appendChild(canvas);
+
+            // Create stars
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const size = 1 + Math.random() * 1.5;
+                const duration = 2 + Math.random() * 3;
+                const delay = Math.random() * 5;
+                const minOpacity = 0.2 + Math.random() * 0.2;
+                const maxOpacity = 0.6 + Math.random() * 0.4;
+
+                star.style.cssText = `
+                    left: ${left}%;
+                    top: ${top}%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    --duration: ${duration}s;
+                    --delay: ${delay}s;
+                    --min-opacity: ${minOpacity};
+                    --max-opacity: ${maxOpacity};
+                `;
+
+                constellation.appendChild(star);
+
+                stars.push({
+                    element: star,
+                    x: left,
+                    y: top,
+                    size: size
+                });
+            }
+
+            // Initialize canvas
+            function initCanvas() {
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                return ctx;
+            }
+
+            // Draw constellation lines
+            function drawConstellationLines(mouseX, mouseY) {
+                const ctx = initCanvas();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const mouseXPercent = (mouseX / window.innerWidth) * 100;
+                const mouseYPercent = (mouseY / window.innerHeight) * 100;
+
+                const connections = new Map();
+
+                stars.forEach((star1) => {
+                    const distToMouse = Math.hypot(
+                        mouseXPercent - star1.x,
+                        mouseYPercent - star1.y
+                    );
+
+                    if (distToMouse < 20) {
+                        const potentialConnections = stars
+                            .filter(star2 => star1 !== star2)
+                            .map(star2 => {
+                                const dist = Math.hypot(
+                                    star1.x - star2.x,
+                                    star1.y - star2.y
+                                );
+
+                                if (dist < 15 && dist > 0) {
+                                    const angle = Math.atan2(
+                                        star2.y - star1.y,
+                                        star2.x - star1.x
+                                    );
+                                    return { star: star2, dist, angle };
+                                }
+                                return null;
+                            })
+                            .filter(conn => conn !== null)
+                            .sort((a, b) => a.dist - b.dist);
+
+                        if (potentialConnections.length > 0) {
+                            const selectedConnections = [];
+                            const MAX_CONNECTIONS = 4;
+
+                            selectedConnections.push(potentialConnections[0]);
+
+                            for (const conn of potentialConnections.slice(1)) {
+                                const isGoodDistribution = selectedConnections.every(existing => {
+                                    const angleDiff = Math.abs(existing.angle - conn.angle);
+                                    return angleDiff > Math.PI / 4;
+                                });
+
+                                if (isGoodDistribution) {
+                                    selectedConnections.push(conn);
+                                    if (selectedConnections.length >= MAX_CONNECTIONS) break;
+                                }
+                            }
+
+                            selectedConnections.forEach(conn => {
+                                const star2 = conn.star;
+                                const connectionKey = [star1.x, star1.y, star2.x, star2.y].join(',');
+                                const reverseKey = [star2.x, star2.y, star1.x, star1.y].join(',');
+
+                                if (!connections.has(connectionKey) && !connections.has(reverseKey)) {
+                                    const x1 = (star1.x * window.innerWidth) / 100;
+                                    const y1 = (star1.y * window.innerHeight) / 100;
+                                    const x2 = (star2.x * window.innerWidth) / 100;
+                                    const y2 = (star2.y * window.innerHeight) / 100;
+
+                                    const opacity = 1 - (conn.dist / 15);
+                                    const mouseOpacity = 1 - (distToMouse / 20);
+
+                                    ctx.beginPath();
+                                    ctx.moveTo(x1, y1);
+                                    ctx.lineTo(x2, y2);
+                                    ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * mouseOpacity * 0.5})`;
+                                    ctx.lineWidth = 0.2;
+                                    ctx.stroke();
+
+                                    connections.set(connectionKey, true);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            // Mouse movement
+            let mouseX = 0, mouseY = 0;
+            let animationFrame;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+
+                if (!animationFrame) {
+                    animationFrame = requestAnimationFrame(() => {
+                        drawConstellationLines(mouseX, mouseY);
+                        animationFrame = null;
+                    });
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if (!animationFrame) {
+                    animationFrame = requestAnimationFrame(() => {
+                        drawConstellationLines(mouseX, mouseY);
+                        animationFrame = null;
+                    });
+                }
+            });
+        }
+
+        // === INTRO SEQUENCE ===
+        function playIntro() {
+            setTimeout(() => intro1.classList.add('show'), 500);
+            setTimeout(() => intro2.classList.add('show'), 4000);
+            setTimeout(() => intro.classList.add('hidden'), 8000);
+        }
+
+        // === START SESSION ===
+        async function startSession() {
+            status.textContent = 'connecting...';
+            btn.classList.add('hidden');
+
+            try {
+                conversation = await Conversation.startSession({
+                    signedUrl: "{{YOUR_SIGNED_URL_HERE}}",
+
+                    onConnect: () => {
+                        status.textContent = 'i am listening';
+                        sanctuary.classList.add('connected', 'listening');
+                    },
+
+                    onDisconnect: () => {
+                        sanctuary.classList.remove('connected', 'speaking', 'listening');
+                        status.textContent = '';
+                        farewell.classList.add('visible');
+                    },
+
+                    onError: (err) => {
+                        console.error(err);
+                        status.textContent = 'connection lost';
+                        btn.classList.remove('hidden');
+                        btn.textContent = 'reconnect';
+                    },
+
+                    onModeChange: (mode) => {
+                        if (mode.mode === 'speaking') {
+                            sanctuary.classList.remove('listening');
+                            sanctuary.classList.add('speaking');
+                            status.textContent = '';
+                        } else {
+                            sanctuary.classList.remove('speaking');
+                            sanctuary.classList.add('listening');
+                            status.textContent = 'i am listening';
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+                status.textContent = 'session expired';
+                btn.classList.remove('hidden');
+            }
+        }
+
+        // === EVENTS ===
+        btn.addEventListener('click', startSession);
+        geometryTrigger.addEventListener('click', () => {
+            if (!conversation) startSession();
+        });
+
+        // === INIT ===
+        createFlowerOfLife();
+        createStars();
+        playIntro();
+
+    </script>
+
+</body>
+</html>

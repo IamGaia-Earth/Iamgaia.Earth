@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower of Life</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background: rgb(11, 0, 27);
+            animation: backgroundFlow 60s linear infinite;
+        }
+
+        @keyframes backgroundFlow {
+            0% { background: rgb(11, 0, 27); }
+            20% { background: rgb(27, 0, 11); }
+            40% { background: rgb(27, 11, 0); }
+            60% { background: rgb(11, 27, 0); }
+            80% { background: rgb(0, 27, 11); }
+            100% { background: rgb(11, 0, 27); }
+        }
+
+        .landing-container {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 15vh;
+            z-index: 1;
+        }
+
+        .earth-transition {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            margin-top: -15vh;
+            z-index: 2;
+            top: 30px;
+        }
+
+        .earth-image {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background-image: url('images/Earth.png');
+            background-size: cover;
+            background-position: top center;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .sacred-geometry {
+            width: 303px;
+            height: 303px;
+            position: relative;
+            animation: rotate 60s linear infinite, fadeIn 2s forwards;
+            margin-bottom: 0;
+            opacity: 0;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes drawCircle {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes pulseLineWidth {
+            0% { stroke-width: 1; }
+            50% { stroke-width: 2; }
+            100% { stroke-width: 1; }
+        }
+
+        .sacred-circle {
+            transform-origin: center;
+            animation: pulseLineWidth 4s infinite ease-in-out;
+        }
+
+        .sacred-geometry svg circle {
+            opacity: 0.6;
+            filter: drop-shadow(0 0 5px #d4af37);
+        }
+
+        .constellation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .constellation-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+            opacity: 0;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.2);
+                box-shadow: 0 0 4px #fff;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .earth-transition {
+                top: 100px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .earth-transition {
+                top: 220px;
+            }
+            .earth-image {
+                height: 130%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .earth-transition {
+                top: 270px;
+            }
+            .earth-image {
+                height: 140%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <div class="sacred-geometry">
+            <!-- SVG for Seed of Life will be added via JavaScript -->
+        </div>
+    </div>
+
+    <div class="earth-transition">
+        <div class="earth-image"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createSeedOfLife();
+        });
+
+        function createSeedOfLife() {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("viewBox", "0 0 300 300");
+            svg.style.width = "100%";
+            svg.style.height = "100%";
+
+            // Center circle
+            const centerCircle = createCircle(150, 150, 50);
+            svg.appendChild(centerCircle);
+
+            // Surrounding circles
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = 150 + 50 * Math.cos(angle);
+                const y = 150 + 50 * Math.sin(angle);
+                const circle = createCircle(x, y, 50);
+                svg.appendChild(circle);
+            }
+
+            document.querySelector('.sacred-geometry').appendChild(svg);
+        }
+
+        function createCircle(cx, cy, r) {
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", cx);
+            circle.setAttribute("cy", cy);
+            circle.setAttribute("r", r);
+            circle.setAttribute("fill", "none");
+            circle.setAttribute("stroke", "#d4af37");
+            circle.setAttribute("stroke-width", "1");
+            circle.classList.add("sacred-circle");
+
+            // Add drawing animation
+            const length = 2 * Math.PI * r;
+            circle.style.strokeDasharray = length;
+            circle.style.strokeDashoffset = length;
+            circle.style.animation = `drawCircle 2s forwards, pulseLineWidth 4s infinite`;
+
+            return circle;
+        }
+
+        function createStars() {
+            const constellation = document.createElement('div');
+            constellation.className = 'constellation';
+            document.body.appendChild(constellation);
+
+            // Create canvas for drawing lines
+            const canvas = document.createElement('canvas');
+            canvas.className = 'constellation-canvas';
+            constellation.appendChild(canvas);
+
+            // Array to store star positions
+            const stars = [];
+
+            // Create stars
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+
+                // Random size
+                const size = 1 + Math.random() * 1.5;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // Random animation
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                star.style.animationDuration = `${1 + Math.random() * 2}s`;
+
+                constellation.appendChild(star);
+
+                // Store star data
+                stars.push({
+                    element: star,
+                    x: left,
+                    y: top,
+                    size: size
+                });
+            }
+
+            // Initialize canvas
+            function initCanvas() {
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                return ctx;
+            }
+
+            // Draw lines between stars
+            function drawConstellationLines(mouseX, mouseY) {
+                const ctx = initCanvas();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Convert mouse position to percentage
+                const mouseXPercent = (mouseX / window.innerWidth) * 100;
+                const mouseYPercent = (mouseY / window.innerHeight) * 100;
+
+                // Keep track of connections per star
+                const connections = new Map();
+
+                // Draw lines between nearby stars
+                stars.forEach((star1) => {
+                    // Calculate distance to mouse
+                    const distToMouse = Math.hypot(
+                        mouseXPercent - star1.x,
+                        mouseYPercent - star1.y
+                    );
+
+                    // Only process stars near the mouse
+                    if (distToMouse < 20) {
+                        // Find all potential connections
+                        const potentialConnections = stars
+                            .filter(star2 => star1 !== star2)
+                            .map(star2 => {
+                                const dist = Math.hypot(
+                                    star1.x - star2.x,
+                                    star1.y - star2.y
+                                );
+
+                                if (dist < 15 && dist > 0) {
+                                    const angle = Math.atan2(
+                                        star2.y - star1.y,
+                                        star2.x - star1.x
+                                    );
+
+                                    return {
+                                        star: star2,
+                                        dist,
+                                        angle
+                                    };
+                                }
+                                return null;
+                            })
+                            .filter(conn => conn !== null)
+                            .sort((a, b) => a.dist - b.dist);
+
+                        // Select up to 4 connections with best angular distribution
+                        if (potentialConnections.length > 0) {
+                            const selectedConnections = [];
+                            const MAX_CONNECTIONS = 4;
+
+                            // Always add the closest connection
+                            selectedConnections.push(potentialConnections[0]);
+
+                            // Add remaining connections based on angular distribution
+                            for (const conn of potentialConnections.slice(1)) {
+                                const isGoodDistribution = selectedConnections.every(existing => {
+                                    const angleDiff = Math.abs(existing.angle - conn.angle);
+                                    return angleDiff > Math.PI / 4;
+                                });
+
+                                if (isGoodDistribution) {
+                                    selectedConnections.push(conn);
+                                    if (selectedConnections.length >= MAX_CONNECTIONS) break;
+                                }
+                            }
+
+                            // Draw selected connections
+                            selectedConnections.forEach(conn => {
+                                const star2 = conn.star;
+                                const connectionKey = [star1.x, star1.y, star2.x, star2.y].join(',');
+                                const reverseKey = [star2.x, star2.y, star1.x, star1.y].join(',');
+
+                                if (!connections.has(connectionKey) && !connections.has(reverseKey)) {
+                                    const x1 = (star1.x * window.innerWidth) / 100;
+                                    const y1 = (star1.y * window.innerHeight) / 100;
+                                    const x2 = (star2.x * window.innerWidth) / 100;
+                                    const y2 = (star2.y * window.innerHeight) / 100;
+
+                                    const opacity = 1 - (conn.dist / 15);
+                                    const mouseOpacity = 1 - (distToMouse / 20);
+
+                                    ctx.beginPath();
+                                    ctx.moveTo(x1, y1);
+                                    ctx.lineTo(x2, y2);
+                                    ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * mouseOpacity * 0.5})`;
+                                    ctx.lineWidth = 0.2;
+                                    ctx.stroke();
+
+                                    connections.set(connectionKey, true);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            // Handle mouse movement
+            let mouseX = 0, mouseY = 0;
+            let animationFrame;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+
+                if (!animationFrame) {
+                    animationFrame = requestAnimationFrame(() => {
+                        drawConstellationLines(mouseX, mouseY);
+                        animationFrame = null;
+                    });
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (!animationFrame) {
+                    animationFrame = requestAnimationFrame(() => {
+                        drawConstellationLines(mouseX, mouseY);
+                        animationFrame = null;
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
